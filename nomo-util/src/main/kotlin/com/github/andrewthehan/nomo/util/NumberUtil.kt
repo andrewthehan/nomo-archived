@@ -1,5 +1,7 @@
 package com.github.andrewthehan.nomo.util
 
+import kotlin.comparisons.maxOf as kotlinMaxOf
+
 @Suppress("Unchecked_cast")
 operator fun <NumberType: Number> NumberType.plus(other: NumberType): NumberType {
   return when (this) {
@@ -37,3 +39,7 @@ operator fun <NumberType: Number> NumberType.compareTo(other: NumberType): Int {
     else -> throw RuntimeException("Unknown numeric type")
   }
 }
+
+fun <NumberType: Number> NumberType.isPositive() = this.compareTo(0) > 0
+fun <NumberType: Number> NumberType.isNegative() = this.compareTo(0) < 0
+fun <NumberType: Number> NumberType.isZero() = this.compareTo(0) == 0
