@@ -6,8 +6,7 @@ fun main(args: Array<String>) {
   println("Hello, world!")
 
   val healthAttribute = HealthAttribute(100)
-  println("Id is ${healthAttribute.id.value}")
-  println("I have ${healthAttribute.value} health.")
+  println("I have ${healthAttribute.value} health and my id is ${healthAttribute.id}")
 
   healthAttribute.damage(50)
   println("Oof, I got hit ${50} damage. Now I have ${healthAttribute.value} health.")
@@ -18,9 +17,8 @@ fun main(args: Array<String>) {
   println("It is ${healthAttribute.isAlive()} that I am alive.")
   println("It is ${healthAttribute.isDead()} that I am dead.")
 
-  val floatHealthAttribute = HealthAttribute(100.0f)
-  println("Id is ${floatHealthAttribute.id.value}")
-  println("I have ${floatHealthAttribute.value} health.")
+  val floatHealthAttribute = HealthAttribute(100f)
+  println("I have ${floatHealthAttribute.value} health and my id is ${floatHealthAttribute.id}")
 
   floatHealthAttribute.damage(25.3f)
   println("Oof, I got hit ${25.3f} damage. Now I have ${floatHealthAttribute.value} health.")
@@ -32,4 +30,5 @@ fun main(args: Array<String>) {
   println("Oof, I got hit ${100f} damage. Now I have ${floatHealthAttribute.value} health.")
   println("It is ${floatHealthAttribute.isAlive()} that I am alive.")
   println("It is ${floatHealthAttribute.isDead()} that I am dead.")
+
 }
