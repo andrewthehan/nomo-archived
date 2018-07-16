@@ -1,0 +1,10 @@
+
+apply plugin: 'application'
+
+mainClassName = 'com.github.andrewthehan.nomo.sample.ApplicationKt'
+
+dependencies {
+    compile project(':nomo-util')
+    compile project(':nomo-core')
+    compile project(':nomo-sdk')
+}

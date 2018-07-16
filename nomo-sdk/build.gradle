@@ -1,0 +1,5 @@
+
+dependencies {
+    compile project(':nomo-util')
+    compile project(':nomo-core')
+}
