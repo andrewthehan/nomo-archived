@@ -1,4 +1,4 @@
-package com.github.andrewthehan.nomo.reflect
+package com.github.andrewthehan.nomo.util
 
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.KAnnotatedElement

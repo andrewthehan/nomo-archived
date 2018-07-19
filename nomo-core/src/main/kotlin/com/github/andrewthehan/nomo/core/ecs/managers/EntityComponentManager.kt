@@ -6,7 +6,7 @@ import com.github.andrewthehan.nomo.core.ecs.exceptions.ExclusiveException
 import com.github.andrewthehan.nomo.core.ecs.exceptions.PendantException
 import com.github.andrewthehan.nomo.core.ecs.types.Component
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
-import com.github.andrewthehan.nomo.reflect.hasAnnotation
+import com.github.andrewthehan.nomo.util.hasAnnotation
 import com.github.andrewthehan.nomo.util.collections.BiMultiMap
 
 class EntityComponentManager {
