@@ -1,34 +1,38 @@
 package com.github.andrewthehan.nomo.sample
 
+import com.github.andrewthehan.nomo.core.ecs.managers.EntityComponentManager
+import com.github.andrewthehan.nomo.core.ecs.types.Entity
+import com.github.andrewthehan.nomo.sdk.ecs.entity.*
 import com.github.andrewthehan.nomo.sdk.ecs.components.attributes.HealthAttribute
+import com.github.andrewthehan.nomo.sdk.ecs.components.attributes.NumberAttribute
 
 fun main(args: Array<String>) {
   println("Hello, world!")
 
-  val healthAttribute = HealthAttribute(100)
-  println("I have ${healthAttribute.value} health and my id is ${healthAttribute.id}")
+  val entityComponentManager = EntityComponentManager()
 
-  healthAttribute.damage(50)
-  println("Oof, I got hit ${50} damage. Now I have ${healthAttribute.value} health.")
+  val entityId = entity(entityComponentManager) {
+    + HealthAttribute(100)
+    + NumberAttribute(55.5f)
+    + NumberAttribute(22)
+  }
 
-  healthAttribute.heal(25)
-  println("I got healed ${25} health. Now I have ${healthAttribute.value} health.")
+  println("Entity: ${entityId}")
+  val healthAttributes = entityComponentManager.getComponents<HealthAttribute<Int>>(entityId).map({ it.value })
+  println("HealthAttribute<Int>: ${healthAttributes}")
+  val healthAttribute = entityComponentManager.getComponent<HealthAttribute<*>>(entityId).value
+  println("Single HealthAttribute<*>: ${healthAttribute}")
 
-  println("It is ${healthAttribute.isAlive()} that I am alive.")
-  println("It is ${healthAttribute.isDead()} that I am dead.")
+  val numberAttributes = entityComponentManager.getComponents<NumberAttribute<Int>>(entityId).map({ it.value })
+  println("NumberAttribute<Int>: ${numberAttributes}")
 
-  val floatHealthAttribute = HealthAttribute(100f)
-  println("I have ${floatHealthAttribute.value} health and my id is ${floatHealthAttribute.id}")
+  val numberAttributesFloat = entityComponentManager.getComponents<NumberAttribute<Float>>(entityId).map({ it.value })
+  println("NumberAttribute<Float>: ${numberAttributesFloat}")
 
-  floatHealthAttribute.damage(25.3f)
-  println("Oof, I got hit ${25.3f} damage. Now I have ${floatHealthAttribute.value} health.")
+  val numberAttributesWild = entityComponentManager.getComponents<NumberAttribute<*>>(entityId).map({ it.value })
+  println("NumberAttribute<*>: ${numberAttributesWild}")
 
-  println("It is ${floatHealthAttribute.isAlive()} that I am alive.")
-  println("It is ${floatHealthAttribute.isDead()} that I am dead.")
-
-  floatHealthAttribute.damage(100f)
-  println("Oof, I got hit ${100f} damage. Now I have ${floatHealthAttribute.value} health.")
-  println("It is ${floatHealthAttribute.isAlive()} that I am alive.")
-  println("It is ${floatHealthAttribute.isDead()} that I am dead.")
+  val allComponents = entityComponentManager.getAllComponents(entityId)
+  println("All components: ${allComponents}")
 
 }

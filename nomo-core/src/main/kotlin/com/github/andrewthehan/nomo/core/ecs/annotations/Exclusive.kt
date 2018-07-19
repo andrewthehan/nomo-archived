@@ -1,3 +1,4 @@
 package com.github.andrewthehan.nomo.core.ecs.interfaces
 
-interface Exclusive
+@Target(AnnotationTarget.CLASS)
+annotation class Exclusive

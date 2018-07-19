@@ -1,8 +1,10 @@
 package com.github.andrewthehan.nomo.sdk.ecs.components.attributes
 
+import com.github.andrewthehan.nomo.core.ecs.interfaces.Exclusive
 import com.github.andrewthehan.nomo.util.*
 
-class HealthAttribute<ValueType : Number>(initialHealth: ValueType) : NumberAttribute<ValueType>(initialHealth) {
+@Exclusive
+class HealthAttribute<ValueType : Number>(initialHealth: ValueType) : NumberAttribute<ValueType>(initialHealth) {  
   fun isAlive(): Boolean = this.value.isPositive()
   fun isDead(): Boolean = this.value.isZero()
 
