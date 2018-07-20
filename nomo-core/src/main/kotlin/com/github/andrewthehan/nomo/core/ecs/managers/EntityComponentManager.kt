@@ -9,7 +9,7 @@ import com.github.andrewthehan.nomo.core.ecs.types.Entity
 import com.github.andrewthehan.nomo.util.hasAnnotation
 import com.github.andrewthehan.nomo.util.collections.BiMultiMap
 
-class EntityComponentManager {
+class EntityComponentManager(val ecsManager: EcsManager) {
   val entitiesToComponentsMap = BiMultiMap<Entity, Component>()
 
   inline fun <reified ActualComponent: Component> addEntityComponent(entity: Entity, component: ActualComponent) {
@@ -34,15 +34,19 @@ class EntityComponentManager {
 
   fun removeComponent(component: Component) = entitiesToComponentsMap.removeValue(component)
 
+  fun getAllEntities() = entitiesToComponentsMap.keys
+  
+  fun <PendantComponent: @Pendant Component> getEntity(component: PendantComponent) = entitiesToComponentsMap.reverse[component].firstOrNull()
+
+  fun getEntities(component: Component) = entitiesToComponentsMap.reverse[component]
+
+  fun getAllComponents() = entitiesToComponentsMap.values
+
+  fun getAllComponents(entity: Entity) = entitiesToComponentsMap[entity]
+
   inline fun <reified ExclusiveComponent: @Exclusive Component> getComponent(entity: Entity)
     = entitiesToComponentsMap[entity].find { it is ExclusiveComponent } as ExclusiveComponent
 
   inline fun <reified ActualComponent: Component> getComponents(entity: Entity)
     = entitiesToComponentsMap[entity].filter { it is ActualComponent }.map { it as ActualComponent }.toMutableSet()
-
-  fun getAllComponents(entity: Entity) = entitiesToComponentsMap[entity]
-  
-  fun <PendantComponent: @Pendant Component> getEntity(component: PendantComponent) = entitiesToComponentsMap.reverse[component].firstOrNull()
-
-  fun getEntities(component: Component) = entitiesToComponentsMap.reverse[component]
 }

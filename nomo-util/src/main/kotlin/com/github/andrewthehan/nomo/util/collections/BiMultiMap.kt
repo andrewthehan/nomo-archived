@@ -5,16 +5,23 @@ class BiMultiMap<K, V> {
   private val reverseMap: MultiMap<V, K>
   val reverse: BiMultiMap<V, K>
 
+  val keys: MutableSet<K>
+  val values: MutableSet<V>
+
   constructor() {
     forwardMap = MultiMap<K, V>()
     reverseMap = MultiMap<V, K>()
     reverse = BiMultiMap(reverseMap, forwardMap, this)
+    keys =  forwardMap.keys
+    values = reverseMap.keys
   }
 
   private constructor(forwardMap: MultiMap<K, V>, reverseMap: MultiMap<V, K>, reverse: BiMultiMap<V, K>) {
     this.forwardMap = forwardMap
     this.reverseMap = reverseMap
     this.reverse = reverse
+    keys = forwardMap.keys
+    values = reverseMap.keys
   }
 
   operator fun get(key: K) = forwardMap[key]
