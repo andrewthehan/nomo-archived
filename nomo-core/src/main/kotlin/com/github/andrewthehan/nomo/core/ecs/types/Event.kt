@@ -1,3 +1,5 @@
 package com.github.andrewthehan.nomo.core.ecs.types
 
-abstract class Event
+import com.github.andrewthehan.nomo.core.ecs.managers.EcsManager
+
+abstract class Event(val ecsManager: EcsManager)
