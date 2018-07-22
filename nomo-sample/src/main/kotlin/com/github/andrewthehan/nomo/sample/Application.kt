@@ -2,6 +2,7 @@ package com.github.andrewthehan.nomo.sample
 
 import com.github.andrewthehan.nomo.core.ecs.managers.*
 import com.github.andrewthehan.nomo.core.ecs.types.*
+import com.github.andrewthehan.nomo.core.ecs.EcsEngine
 import com.github.andrewthehan.nomo.sdk.ecs.entity.*
 import com.github.andrewthehan.nomo.sdk.ecs.components.attributes.*
 import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.*
@@ -11,24 +12,29 @@ import com.github.andrewthehan.nomo.sdk.ecs.systems.*
 fun main(args: Array<String>) {
   println("Hello, world!")
 
-  val ecsManager = EcsManager()
-  ecsManager.systemManager.addSystem(UpdateSystem(ecsManager))
+  val ecsEngine = EcsEngine()
+  ecsEngine.addManager(DependencyInjectionManager(ecsEngine))
+  ecsEngine.addManager(EntityComponentManager(ecsEngine))
+  ecsEngine.addManager(EventManager(ecsEngine))
+  ecsEngine.addManager(SystemManager(ecsEngine))
 
-  createEntity(ecsManager)
+  createEntity(ecsEngine)
 
-  ecsManager.systemManager.update(0.001f)
-  ecsManager.systemManager.update(0.001f)
-  ecsManager.systemManager.update(0.001f)
-  ecsManager.systemManager.update(0.001f)
-  ecsManager.systemManager.update(0.001f)
+  val systemManager = ecsEngine.getManager<SystemManager>()!!
+  systemManager.addSystem(UpdateSystem())
+
+  // Simulate game loop
+  for (i in 0..100) {
+    systemManager.update(0.1f)
+  }
 }
 
-fun createEntity(ecsManager: EcsManager) {
-  entity(ecsManager.entityComponentManager) {
+fun createEntity(ecsEngine: EcsEngine) {
+  val entityComponentManager = ecsEngine.getManager<EntityComponentManager>()!!
+  entity(entityComponentManager) {
     + HealthAttribute(100f)
     + UpdateBehavior({
       val event = it
-      val entityComponentManager = it.ecsManager.entityComponentManager
       entityComponentManager.getEntities(this)
         .map { entityComponentManager.getComponent<HealthAttribute<Float>>(it) }
         .forEach { 

@@ -1,15 +1,17 @@
 package com.github.andrewthehan.nomo.core.ecs.managers
 
-import com.github.andrewthehan.nomo.core.ecs.interfaces.Exclusive
-import com.github.andrewthehan.nomo.core.ecs.interfaces.Pendant
+import com.github.andrewthehan.nomo.core.ecs.annotations.Exclusive
+import com.github.andrewthehan.nomo.core.ecs.annotations.Pendant
 import com.github.andrewthehan.nomo.core.ecs.exceptions.ExclusiveException
 import com.github.andrewthehan.nomo.core.ecs.exceptions.PendantException
 import com.github.andrewthehan.nomo.core.ecs.types.Component
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
+import com.github.andrewthehan.nomo.core.ecs.types.Manager
+import com.github.andrewthehan.nomo.core.ecs.EcsEngine
 import com.github.andrewthehan.nomo.util.hasAnnotation
 import com.github.andrewthehan.nomo.util.collections.BiMultiMap
 
-class EntityComponentManager(val ecsManager: EcsManager) {
+class EntityComponentManager(override val ecsEngine: EcsEngine) : Manager {
   val entitiesToComponentsMap = BiMultiMap<Entity, Component>()
 
   inline fun <reified ActualComponent: Component> addEntityComponent(entity: Entity, component: ActualComponent) {
