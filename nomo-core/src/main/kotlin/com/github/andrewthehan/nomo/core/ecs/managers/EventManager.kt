@@ -16,7 +16,7 @@ class EventManager(override val ecsEngine: EcsEngine) : Manager {
 
   fun dispatchEvent(event: Event) {
     val behaviors = entityComponentManager.getAllComponents().filter { it is Behavior }.map { it as Behavior }
-    behaviors.forEach { dependencyInjectionManager::injectManagers }
+    behaviors.forEach { dependencyInjectionManager.injectManagers(it) }
     behaviors
       .forEach { behavior -> getEventListeners(behavior::class)
         .filter { it.getAnnotation<EventListener>().value.isSubclassOf(event::class) }
