@@ -10,37 +10,37 @@ import com.github.andrewthehan.nomo.core.ecs.types.Manager
 import com.github.andrewthehan.nomo.core.ecs.EcsEngine
 import com.github.andrewthehan.nomo.util.collections.BiMultiMap
 import com.github.andrewthehan.nomo.util.filterAs
-import com.github.andrewthehan.nomo.util.findAs
+import com.github.andrewthehan.nomo.util.singleAs
 import com.github.andrewthehan.nomo.util.hasAnnotation
 
 class EntityComponentManager(override val ecsEngine: EcsEngine) : Manager {
   val entitiesToComponentsMap = BiMultiMap<Entity, Component>()
 
-  inline fun <reified ActualComponent: Component> addEntityComponent(entity: Entity, component: ActualComponent) {
-    val componentTypeClass = component::class
-    if (componentTypeClass.hasAnnotation<Exclusive>()) {
+  inline fun <reified ActualComponent: Component> add(entity: Entity, component: ActualComponent) {
+    val componentClass = component::class
+    if (componentClass.hasAnnotation<Exclusive>()) {
       if (entitiesToComponentsMap[entity].any { it is ActualComponent }) {
         throw ExclusiveException()
       }
     }
-    if (componentTypeClass.hasAnnotation<Pendant>()) {
+    if (componentClass.hasAnnotation<Pendant>()) {
       if (!entitiesToComponentsMap.reverse[component].isEmpty()) {
         throw PendantException()
-      } 
+      }
     }
 
     entitiesToComponentsMap.put(entity, component)
   }
 
-  fun removeEntityComponent(entity: Entity, component: Component) = entitiesToComponentsMap.remove(entity, component)
+  fun remove(entity: Entity, component: Component) = entitiesToComponentsMap.remove(entity, component)
 
-  fun removeEntity(entity: Entity) = entitiesToComponentsMap.removeKey(entity)
+  fun remove(entity: Entity) = entitiesToComponentsMap.removeKey(entity)
 
-  fun removeComponent(component: Component) = entitiesToComponentsMap.removeValue(component)
+  fun remove(component: Component) = entitiesToComponentsMap.removeValue(component)
 
   fun getAllEntities() = entitiesToComponentsMap.keys
   
-  fun <PendantComponent: @Pendant Component> getEntity(component: PendantComponent) = entitiesToComponentsMap.reverse[component].firstOrNull()
+  fun <PendantComponent: @Pendant Component> getEntity(component: PendantComponent) = entitiesToComponentsMap.reverse[component].singleOrNull()
 
   fun getEntities(component: Component) = entitiesToComponentsMap.reverse[component]
 
@@ -49,7 +49,7 @@ class EntityComponentManager(override val ecsEngine: EcsEngine) : Manager {
   fun getAllComponents(entity: Entity) = entitiesToComponentsMap[entity]
 
   inline fun <reified ExclusiveComponent: @Exclusive Component> getComponent(entity: Entity)
-    = entitiesToComponentsMap[entity].findAs<ExclusiveComponent>()
+    = entitiesToComponentsMap[entity].singleAs<ExclusiveComponent>()
 
   inline fun <reified ActualComponent: Component> getComponents(entity: Entity)
     = entitiesToComponentsMap[entity].filterAs<ActualComponent>()

@@ -8,7 +8,7 @@ import com.github.andrewthehan.nomo.util.randomId
 fun entity(entityComponentManager: EntityComponentManager, init: EntityBuilder.() -> Unit): Entity {
   val entityBuilder = EntityBuilder()
   entityBuilder.init()
-  entityBuilder.components.forEach { entityComponentManager.addEntityComponent(entityBuilder.id, it) }
+  entityBuilder.components.forEach { entityComponentManager.add(entityBuilder.id, it) }
   return entityBuilder.id
 }
 

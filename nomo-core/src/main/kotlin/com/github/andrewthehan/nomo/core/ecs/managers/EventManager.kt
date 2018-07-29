@@ -16,7 +16,7 @@ class EventManager(override val ecsEngine: EcsEngine) : Manager {
   private val entityComponentManager by lazy { ecsEngine.managers.get<EntityComponentManager>()!! }
   private val dependencyInjectionManager by lazy { ecsEngine.managers.get<DependencyInjectionManager>()!! }
 
-  private fun dispatchEvent(behaviors: Set<Behavior>, event: Event) {
+  private fun dispatchEvent(behaviors: Iterable<Behavior>, event: Event) {
     behaviors.forEach { behavior -> 
       dependencyInjectionManager.injectManagers(behavior)
       getEventListeners(behavior::class)

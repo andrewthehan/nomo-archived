@@ -97,7 +97,7 @@ class DamageableBehavior : AbstractBehavior() {
         if (it.isDead()) {
           val entity = entityComponentManager.getEntity(it)!!
           eventManager.dispatchEvent(DeathEvent(entity))
-          entityComponentManager.removeEntityComponent(entity, this)
+          entityComponentManager.remove(entity, this)
           println("Removing DamageableBehavior...")
         }
       }

@@ -13,7 +13,7 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.KMutableProperty
 
 fun getDependencies(c: KClass<*>)
-  = c.findAnnotation<Dependent>()?.values ?: emptyArray()
+  = c.findAnnotation<Dependent>()?.values.orEmpty()
 
 fun getEventListeners(c: KClass<*>)
   = c.functions.filter { it.hasAnnotation<EventListener>() }
