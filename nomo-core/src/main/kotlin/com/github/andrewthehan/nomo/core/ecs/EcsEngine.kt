@@ -1,20 +1,13 @@
 package com.github.andrewthehan.nomo.core.ecs
 
+import com.github.andrewthehan.nomo.core.ecs.interfaces.Updatable
 import com.github.andrewthehan.nomo.core.ecs.types.Manager
+import com.github.andrewthehan.nomo.core.ecs.types.Task
+import com.github.andrewthehan.nomo.util.collections.TypedSet
 
-import kotlin.reflect.KClass
+class EcsEngine : Updatable<Float> {
+  val managers = TypedSet<Manager>()
+  val tasks = TypedSet<Task>()
 
-class EcsEngine {
-  val managers = HashMap<KClass<out Manager>, Manager>()
-
-  fun addManager(manager: Manager) = managers.put(manager::class, manager)
-
-  inline fun <reified ActualManager : Manager> getManager() = managers.get(ActualManager::class) as? ActualManager
-
-  @Suppress("Unchecked_cast")
-  fun <ActualManager : Manager> getManager(managerClass: KClass<ActualManager>) = managers.get(managerClass) as? ActualManager
-
-  inline fun <reified ActualManager : Manager> removeManager() = managers.remove(ActualManager::class)
-
-  fun removeManager(manager: Manager) = managers.remove(manager::class)
+  override fun update(delta: Float) = tasks.forEach { it.update(delta) }
 }

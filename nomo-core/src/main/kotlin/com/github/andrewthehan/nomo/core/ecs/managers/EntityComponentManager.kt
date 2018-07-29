@@ -8,8 +8,10 @@ import com.github.andrewthehan.nomo.core.ecs.types.Component
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
 import com.github.andrewthehan.nomo.core.ecs.types.Manager
 import com.github.andrewthehan.nomo.core.ecs.EcsEngine
-import com.github.andrewthehan.nomo.util.hasAnnotation
 import com.github.andrewthehan.nomo.util.collections.BiMultiMap
+import com.github.andrewthehan.nomo.util.filterAs
+import com.github.andrewthehan.nomo.util.findAs
+import com.github.andrewthehan.nomo.util.hasAnnotation
 
 class EntityComponentManager(override val ecsEngine: EcsEngine) : Manager {
   val entitiesToComponentsMap = BiMultiMap<Entity, Component>()
@@ -47,8 +49,8 @@ class EntityComponentManager(override val ecsEngine: EcsEngine) : Manager {
   fun getAllComponents(entity: Entity) = entitiesToComponentsMap[entity]
 
   inline fun <reified ExclusiveComponent: @Exclusive Component> getComponent(entity: Entity)
-    = entitiesToComponentsMap[entity].find { it is ExclusiveComponent } as ExclusiveComponent
+    = entitiesToComponentsMap[entity].findAs<ExclusiveComponent>()
 
   inline fun <reified ActualComponent: Component> getComponents(entity: Entity)
-    = entitiesToComponentsMap[entity].filter { it is ActualComponent }.map { it as ActualComponent }.toMutableSet()
+    = entitiesToComponentsMap[entity].filterAs<ActualComponent>()
 }

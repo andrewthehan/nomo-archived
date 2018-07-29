@@ -2,6 +2,7 @@ package com.github.andrewthehan.nomo.sample
 
 import com.github.andrewthehan.nomo.core.ecs.annotations.*
 import com.github.andrewthehan.nomo.core.ecs.managers.*
+import com.github.andrewthehan.nomo.core.ecs.tasks.*
 import com.github.andrewthehan.nomo.core.ecs.types.*
 import com.github.andrewthehan.nomo.core.ecs.EcsEngine
 import com.github.andrewthehan.nomo.sdk.ecs.entity.*
@@ -13,30 +14,48 @@ import com.github.andrewthehan.nomo.sdk.ecs.systems.*
 fun main(args: Array<String>) {
   println("Hello, world!")
 
-  val ecsEngine = EcsEngine()
-  ecsEngine.addManager(DependencyInjectionManager(ecsEngine))
-  ecsEngine.addManager(EntityComponentManager(ecsEngine))
-  ecsEngine.addManager(EventManager(ecsEngine))
-  ecsEngine.addManager(SystemManager(ecsEngine))
+  val ecsEngine = EcsEngine().apply {
+    val ecs = this
+    managers.apply {
+      add(DependencyInjectionManager(ecs))
+      add(EntityComponentManager(ecs))
+      add(EventManager(ecs))
+      add(SystemsManager(ecs))
+    }
+    tasks.apply {
+      add(SystemsUpdateTask(ecs))
+      add(DependencyValidatorTask(ecs))
+    }
+  }
 
-  val systemManager = ecsEngine.getManager<SystemManager>()!!
-  systemManager.addSystem(UpdateSystem())
+  val systemsManager = ecsEngine.managers.get<SystemsManager>()!!
+  systemsManager.systems.apply {
+    add(UpdateSystem())
+  }
 
   createEntity(ecsEngine)
 
   // Simulate game loop
   for (i in 0..12) {
-    systemManager.update(10f)
+    ecsEngine.update(10f)
   }
 }
 
 fun createEntity(ecsEngine: EcsEngine) {
-  val entityComponentManager = ecsEngine.getManager<EntityComponentManager>()!!
+  val entityComponentManager = ecsEngine.managers.get<EntityComponentManager>()!!
   entity(entityComponentManager) {
     + HealthAttribute(100)
-    + HealthDrainBehavior()
+    + ContinuousDamageBehavior()
     + DamageableBehavior()
     + DeathBehavior()
+    + EventLogBehavior()
+  }
+}
+
+class EventLogBehavior : AbstractBehavior() {
+  @EventListener(Event::class)
+  fun log(event: Event) {
+    println("Event received: ${event::class.simpleName}")
   }
 }
 
@@ -44,7 +63,7 @@ class DamageEvent<NumberType: Number>(val entity: Entity, val amount: NumberType
 
 class DeathEvent(val entity: Entity) : Event
 
-class HealthDrainBehavior : AbstractBehavior() {
+class ContinuousDamageBehavior : AbstractBehavior() {
   @MutableInject
   lateinit var eventManager: EventManager
 
@@ -53,13 +72,13 @@ class HealthDrainBehavior : AbstractBehavior() {
 
   @EventListener(UpdateEvent::class)
   fun drainHealth(event: UpdateEvent) {
-    println("Draining health...")
     entityComponentManager
       .getEntities(this)
       .forEach { eventManager.dispatchEvent(DamageEvent(it, event.delta)) }
   }
 }
 
+@Dependent(HealthAttribute::class)
 class DamageableBehavior : AbstractBehavior() {
   @MutableInject
   lateinit var eventManager: EventManager

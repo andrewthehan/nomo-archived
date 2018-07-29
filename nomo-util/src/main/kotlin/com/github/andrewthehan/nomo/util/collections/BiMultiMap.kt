@@ -1,6 +1,6 @@
 package com.github.andrewthehan.nomo.util.collections
 
-class BiMultiMap<K, V> {
+open class BiMultiMap<K, V> {
   private val forwardMap: MultiMap<K, V>
   private val reverseMap: MultiMap<V, K>
   val reverse: BiMultiMap<V, K>
