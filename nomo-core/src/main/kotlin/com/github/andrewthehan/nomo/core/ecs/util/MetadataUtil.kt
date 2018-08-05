@@ -1,5 +1,7 @@
 package com.github.andrewthehan.nomo.core.ecs.util
 
+import com.github.andrewthehan.nomo.core.ecs.annotations.After
+import com.github.andrewthehan.nomo.core.ecs.annotations.Before
 import com.github.andrewthehan.nomo.core.ecs.annotations.Dependent
 import com.github.andrewthehan.nomo.core.ecs.annotations.EventListener
 import com.github.andrewthehan.nomo.core.ecs.annotations.MutableInject
@@ -12,11 +14,23 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KMutableProperty
 
-fun getDependencies(c: KClass<*>)
-  = c.findAnnotation<Dependent>()?.values.orEmpty()
+fun KClass<*>.getDependencies()
+  = findAnnotation<Dependent>()?.values.orEmpty()
 
-fun getEventListeners(c: KClass<*>)
-  = c.functions.filter { it.hasAnnotation<EventListener>() }
+fun KClass<*>.getEventListeners()
+  = functions.filter { it.hasAnnotation<EventListener>() }
 
-fun getInjectableProperties(c: KClass<*>)
-  = c.memberProperties.filter { it.hasAnnotation<MutableInject>() }.map { it as KMutableProperty<*> }
+fun KClass<*>.getInjectableProperties()
+  = memberProperties.filter { it.hasAnnotation<MutableInject>() }.map { it as KMutableProperty<*> }
+
+fun KClass<*>.getBefores()
+  = findAnnotation<Before>()?.values.orEmpty()
+
+fun KClass<*>.getAfters()
+  = findAnnotation<After>()?.values.orEmpty()
+  
+fun KFunction<*>.getBefores()
+  = findAnnotation<Before>()?.values.orEmpty()
+
+fun KFunction<*>.getAfters()
+  = findAnnotation<After>()?.values.orEmpty()

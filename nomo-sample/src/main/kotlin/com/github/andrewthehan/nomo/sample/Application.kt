@@ -17,14 +17,15 @@ fun main(args: Array<String>) {
   val ecsEngine = EcsEngine().apply {
     val ecs = this
     managers.apply {
-      add(DependencyInjectionManager(ecs))
       add(EntityComponentManager(ecs))
       add(EventManager(ecs))
       add(SystemsManager(ecs))
     }
     tasks.apply {
+      add(InjectionTask(ecs))
       add(SystemsUpdateTask(ecs))
       add(DependencyValidatorTask(ecs))
+      add(EventPropagationTask(ecs))
     }
   }
 
@@ -36,7 +37,8 @@ fun main(args: Array<String>) {
   createEntity(ecsEngine)
 
   // Simulate game loop
-  for (i in 0..12) {
+  (0..12).forEach {
+    println("LOOP")
     ecsEngine.update(10f)
   }
 }
@@ -52,6 +54,7 @@ fun createEntity(ecsEngine: EcsEngine) {
   }
 }
 
+@Before(ContinuousDamageBehavior::class, DamageableBehavior::class, DeathBehavior::class)
 class EventLogBehavior : AbstractBehavior() {
   @EventListener(Event::class)
   fun log(event: Event) {
@@ -63,6 +66,7 @@ class DamageEvent<NumberType: Number>(val entity: Entity, val amount: NumberType
 
 class DeathEvent(val entity: Entity) : Event
 
+@Dependent(DamageableBehavior::class, HealthAttribute::class)
 class ContinuousDamageBehavior : AbstractBehavior() {
   @MutableInject
   lateinit var eventManager: EventManager
@@ -97,8 +101,10 @@ class DamageableBehavior : AbstractBehavior() {
         if (it.isDead()) {
           val entity = entityComponentManager.getEntity(it)!!
           eventManager.dispatchEvent(DeathEvent(entity))
-          entityComponentManager.remove(entity, this)
           println("Removing DamageableBehavior...")
+          entityComponentManager.remove(entity, this)
+          println("Removing HealthAttribute...")
+          entityComponentManager.remove(entity, it)
         }
       }
   }
