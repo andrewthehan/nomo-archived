@@ -37,8 +37,8 @@ fun main(args: Array<String>) {
   createEntity(ecsEngine)
 
   // Simulate game loop
-  (0..12).forEach {
-    println("LOOP")
+  (0..15).forEach {
+    println("******** LOOP ********")
     ecsEngine.update(10f)
   }
 }
@@ -49,22 +49,33 @@ fun createEntity(ecsEngine: EcsEngine) {
     + HealthAttribute(100)
     + ContinuousDamageBehavior()
     + DamageableBehavior()
+    + ArmorBehavior(.8f)
     + DeathBehavior()
     + EventLogBehavior()
   }
 }
 
-@Before(ContinuousDamageBehavior::class, DamageableBehavior::class, DeathBehavior::class)
+@Befores(
+  Before(include = [ Component::class ], exclude = [ EventLogBehavior::class ])
+)
 class EventLogBehavior : AbstractBehavior() {
+  @MutableInject
+  lateinit var entityComponentManager: EntityComponentManager
+
   @EventListener(Event::class)
   fun log(event: Event) {
-    println("Event received: ${event::class.simpleName}")
+    if (!entityComponentManager.containsComponent(this)) {
+      return
+    }
+
+    val entity = entityComponentManager.getEntity(this)!!
+    println("Entity (${entity}) receives ${event}")
   }
 }
 
-class DamageEvent<NumberType: Number>(val entity: Entity, val amount: NumberType) : Event
+data class DamageEvent<NumberType: Number>(val entity: Entity, var amount: NumberType) : Event
 
-class DeathEvent(val entity: Entity) : Event
+data class DeathEvent(val entity: Entity) : Event
 
 @Dependent(DamageableBehavior::class, HealthAttribute::class)
 class ContinuousDamageBehavior : AbstractBehavior() {
@@ -76,9 +87,28 @@ class ContinuousDamageBehavior : AbstractBehavior() {
 
   @EventListener(UpdateEvent::class)
   fun drainHealth(event: UpdateEvent) {
+    if (!entityComponentManager.containsComponent(this)) {
+      return
+    }
+
+    val entity = entityComponentManager.getEntity(this)!!
     entityComponentManager
       .getEntities(this)
-      .forEach { eventManager.dispatchEvent(DamageEvent(it, event.delta)) }
+      .forEach { eventManager.dispatchEvent(DamageEvent(it, event.delta), entity) }
+  }
+}
+
+@Dependent(DamageableBehavior::class)
+class ArmorBehavior(val reduction: Float) : AbstractBehavior() {
+  @EventListener(DamageEvent::class)
+  @Befores(
+    Before(include = [ DamageableBehavior::class ])
+  )
+  fun applyArmor(event: DamageEvent<Int>) {
+    val before = event.amount
+    val after = (event.amount * reduction).toInt()
+    println("Armor reduces damage: ${before} (${reduction}) -> ${after}")
+    event.amount = after
   }
 }
 
@@ -96,15 +126,13 @@ class DamageableBehavior : AbstractBehavior() {
       .filter { it == event.entity }
       .map { entityComponentManager.getComponent<HealthAttribute<Int>>(it) }
       .forEach {
-        println("Health: ${it.value} (- ${event.amount})")
+        val before = it.value
         it.damage(event.amount)
+        val after = it.value
+        println("Health damaged: ${before} - ${event.amount} = ${after}")
         if (it.isDead()) {
           val entity = entityComponentManager.getEntity(it)!!
-          eventManager.dispatchEvent(DeathEvent(entity))
-          println("Removing DamageableBehavior...")
-          entityComponentManager.remove(entity, this)
-          println("Removing HealthAttribute...")
-          entityComponentManager.remove(entity, it)
+          eventManager.dispatchEvent(DeathEvent(entity), entity)
         }
       }
   }
@@ -116,8 +144,14 @@ class DeathBehavior : AbstractBehavior() {
 
   @EventListener(DeathEvent::class)
   fun onDeath(event: DeathEvent) {
-    if (event.entity == entityComponentManager.getEntity(this)!!) {
+    if (!entityComponentManager.containsComponent(this)) {
+      return
+    }
+    
+    val entity = entityComponentManager.getEntity(this)!!
+    if (event.entity == entity) {
       println("Death.")
+      entityComponentManager.remove(entity)
     }
   }
 }

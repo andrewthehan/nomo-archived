@@ -1,7 +1,9 @@
 package com.github.andrewthehan.nomo.core.ecs.util
 
 import com.github.andrewthehan.nomo.core.ecs.annotations.After
+import com.github.andrewthehan.nomo.core.ecs.annotations.Afters
 import com.github.andrewthehan.nomo.core.ecs.annotations.Before
+import com.github.andrewthehan.nomo.core.ecs.annotations.Befores
 import com.github.andrewthehan.nomo.core.ecs.annotations.Dependent
 import com.github.andrewthehan.nomo.core.ecs.annotations.EventListener
 import com.github.andrewthehan.nomo.core.ecs.annotations.MutableInject
@@ -24,13 +26,13 @@ fun KClass<*>.getInjectableProperties()
   = memberProperties.filter { it.hasAnnotation<MutableInject>() }.map { it as KMutableProperty<*> }
 
 fun KClass<*>.getBefores()
-  = findAnnotation<Before>()?.values.orEmpty()
+  = findAnnotation<Befores>()?.values.orEmpty()
 
 fun KClass<*>.getAfters()
-  = findAnnotation<After>()?.values.orEmpty()
+  = findAnnotation<Afters>()?.values.orEmpty()
   
 fun KFunction<*>.getBefores()
-  = findAnnotation<Before>()?.values.orEmpty()
+  = findAnnotation<Befores>()?.values.orEmpty()
 
 fun KFunction<*>.getAfters()
-  = findAnnotation<After>()?.values.orEmpty()
+  = findAnnotation<Afters>()?.values.orEmpty()

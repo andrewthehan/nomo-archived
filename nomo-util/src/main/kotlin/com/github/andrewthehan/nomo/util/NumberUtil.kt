@@ -2,7 +2,7 @@ package com.github.andrewthehan.nomo.util
 
 import kotlin.comparisons.maxOf as kotlinMaxOf
 
-@Suppress("Unchecked_cast")
+@Suppress("UNCHECKED_CAST")
 operator fun <NumberType: Number> NumberType.plus(other: NumberType): NumberType {
   return when (this) {
     is Long -> (this.toLong() + other.toLong()) as NumberType
@@ -15,7 +15,7 @@ operator fun <NumberType: Number> NumberType.plus(other: NumberType): NumberType
   }
 }
 
-@Suppress("Unchecked_cast")
+@Suppress("UNCHECKED_CAST")
 operator fun <NumberType: Number> NumberType.minus(other: NumberType): NumberType {
   return when (this) {
     is Long -> (this.toLong() - other.toLong()) as NumberType

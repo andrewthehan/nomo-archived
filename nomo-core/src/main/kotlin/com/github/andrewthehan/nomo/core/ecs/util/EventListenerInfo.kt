@@ -8,6 +8,8 @@ import com.github.andrewthehan.nomo.util.getAnnotation
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 
-data class EventListenerInfo(val behavior: Behavior, val eventListener: KFunction<*>) {
-  val eventType = eventListener.getAnnotation<EventListener>().value
-}
+data class EventListenerInfo(
+  val behavior: Behavior,
+  val eventListener: KFunction<*>,
+  val eventType: KClass<out Event> = eventListener.getAnnotation<EventListener>().value
+)

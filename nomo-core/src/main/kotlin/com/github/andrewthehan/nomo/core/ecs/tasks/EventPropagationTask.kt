@@ -35,14 +35,14 @@ class EventPropagationTask(override val ecsEngine: EcsEngine) : Task {
     val events = eventManager.events.toSet()
     eventManager.events.clear()
 
-    events.forEach {
-      val event = it.event
-      val targetBehaviors: Iterable<Behavior> = it.behaviors?.asIterable() ?: allBehaviors
-
-      eventListenerOrder
-        .filter { targetBehaviors.contains(it.behavior) }
-        .filter { event::class.isSubclassOf(it.eventType) }
-        .forEach { propagateEvent(it.behavior, it.eventListener, event) }
+    eventListenerOrder.forEach { (behavior, eventListener, eventType) ->
+      events
+        .filter { it.event::class.isSubclassOf(eventType) }
+        .filter { 
+          val targetBehaviors: Iterable<Behavior> = it.behaviors?.asIterable() ?: allBehaviors
+          targetBehaviors.contains(behavior)
+        }
+        .forEach { propagateEvent(behavior, eventListener, it.event) }
     }
   }
 }

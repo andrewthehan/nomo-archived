@@ -8,8 +8,9 @@ import com.github.andrewthehan.nomo.core.ecs.util.getAfters
 import com.github.andrewthehan.nomo.util.collections.Graph
 
 import kotlin.reflect.KFunction
+import kotlin.reflect.full.isSubclassOf
 
-fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): Array<EventListenerInfo> {
+fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): List<EventListenerInfo> {
   val graph = Graph<EventListenerInfo>()
   val eventListenerToInfoMap = HashMap<KFunction<*>, EventListenerInfo>()
 
@@ -32,6 +33,15 @@ fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): Array<EventLis
     // class befores
     val befores = behavior::class.getBefores()
     befores
+      .map { beforeType -> 
+        val include = beforeType.include
+        val exclude = beforeType.exclude
+        behaviors.map { it::class }.filter { behavior ->
+          include.any { behavior.isSubclassOf(it) } && exclude.none { behavior.isSubclassOf(it) }
+        }
+      }
+      .flatten()
+      .distinct()
       .map { it.getEventListeners() }
       .flatten()
       .map { eventListenerToInfoMap.get(it)!! }
@@ -42,6 +52,15 @@ fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): Array<EventLis
     // class afters
     val afters = behavior::class.getAfters()
     afters
+      .map { afterType -> 
+        val include = afterType.include
+        val exclude = afterType.exclude
+        behaviors.map { it::class }.filter { behavior ->
+          include.any { behavior.isSubclassOf(it) } && exclude.none { behavior.isSubclassOf(it) }
+        }
+      }
+      .flatten()
+      .distinct()
       .map { it.getEventListeners() }
       .flatten()
       .map { eventListenerToInfoMap.get(it)!! }
@@ -53,8 +72,17 @@ fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): Array<EventLis
       val eventListener = eventListenerInfo.eventListener
 
       // function befores
-      val functionBefores = eventListener::class.getBefores()
+      val functionBefores = eventListener.getBefores()
       functionBefores
+        .map { beforeType -> 
+          val include = beforeType.include
+          val exclude = beforeType.exclude
+          behaviors.map { it::class }.filter { behavior ->
+            include.any { behavior.isSubclassOf(it) } && exclude.none { behavior.isSubclassOf(it) }
+          }
+        }
+        .flatten()
+        .distinct()
         .map { it.getEventListeners() }
         .flatten()
         .map { eventListenerToInfoMap.get(it)!! }
@@ -63,8 +91,17 @@ fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): Array<EventLis
         }
       
       // function afters
-      val functionAfters = eventListener::class.getAfters()
+      val functionAfters = eventListener.getAfters()
       functionAfters
+        .map { afterType -> 
+          val include = afterType.include
+          val exclude = afterType.exclude
+          behaviors.map { it::class }.filter { behavior ->
+            include.any { behavior.isSubclassOf(it) } && exclude.none { behavior.isSubclassOf(it) }
+          }
+        }
+        .flatten()
+        .distinct()
         .map { it.getEventListeners() }
         .flatten()
         .map { eventListenerToInfoMap.get(it)!! }
@@ -74,21 +111,6 @@ fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): Array<EventLis
     }
   }
 
-  // find topological sort (kahn's algorithm)
-  val sort = mutableListOf<EventListenerInfo>()
-  val noIncoming = graph.nodes.filter { !graph.hasIncomingEdges(it) }.toMutableSet()
-  while (noIncoming.any()) {
-    val node = noIncoming.first()
-    noIncoming.remove(node)
-    sort.add(node)
-    val outgoing = graph.getOutgoingEdges(node)
-    graph.removeNode(node)
-    noIncoming.addAll(outgoing.filter { !graph.hasIncomingEdges(it) })
-  }
-
-  if (graph.nodes.any()) {
-    throw Exception("TODO: create custom cycle detected exception")
-  }
-
-  return sort.toTypedArray()
+  // find topological sort
+  return graph.getTopologicalSort()
 }

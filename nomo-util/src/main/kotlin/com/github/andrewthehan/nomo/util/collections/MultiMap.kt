@@ -1,11 +1,17 @@
 package com.github.andrewthehan.nomo.util.collections
 
-open class MultiMap<K, V> {
+open class MultiMap<K, V> : Cloneable {
   private val map = HashMap<K, MutableSet<V>>()
   val entries = map.entries
   val keys = map.keys
   val size = map.size
   val values = map.values
+
+  override public fun clone(): Any {
+    val clone = MultiMap<K, V>()
+    entries.forEach { (key, value) -> value.forEach { clone.put(key, it) } }
+    return clone
+  }
 
   fun containsKey(key: K): Boolean = map.containsKey(key)
   fun containsValue(value: V): Boolean = map.values.any { it.contains(value) }

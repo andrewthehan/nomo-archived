@@ -38,6 +38,10 @@ class EntityComponentManager(override val ecsEngine: EcsEngine) : Manager {
 
   fun remove(component: Component) = entitiesToComponentsMap.removeValue(component)
 
+  fun containsEntity(entity: Entity) = entitiesToComponentsMap.containsKey(entity)
+
+  fun containsComponent(component: Component) = entitiesToComponentsMap.containsValue(component)
+
   fun getAllEntities() = entitiesToComponentsMap.keys
   
   fun <PendantComponent: @Pendant Component> getEntity(component: PendantComponent) = entitiesToComponentsMap.reverse[component].singleOrNull()
