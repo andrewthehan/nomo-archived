@@ -25,19 +25,17 @@ fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): List<EventList
       }
   }
 
-  // create directed edges
-  behaviors.forEach { behavior ->
-    val eventListeners = behavior::class.getEventListeners()
-    val eventListenerInfos = eventListeners.map { eventListenerToInfoMap.get(it)!! }
+  val behaviorClasses = behaviors.map { it::class }
 
-    // class befores
-    val befores = behavior::class.getBefores()
+  // create metadata for each behavior's class/method befores/afters
+  val behaviorToClassBeforesMap = behaviorClasses.associateBy({ it }, { behaviorClass -> 
+    val befores = behaviorClass.getBefores()
     befores
       .map { beforeType -> 
         val include = beforeType.include
         val exclude = beforeType.exclude
-        behaviors.map { it::class }.filter { behavior ->
-          include.any { behavior.isSubclassOf(it) } && exclude.none { behavior.isSubclassOf(it) }
+        behaviorClasses.filter { behaviorClass ->
+          include.any { behaviorClass.isSubclassOf(it) } && exclude.none { behaviorClass.isSubclassOf(it) }
         }
       }
       .flatten()
@@ -45,18 +43,15 @@ fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): List<EventList
       .map { it.getEventListeners() }
       .flatten()
       .map { eventListenerToInfoMap.get(it)!! }
-      .forEach { targetEventListenerInfo ->
-        eventListenerInfos.forEach { graph.addEdge(it, targetEventListenerInfo) }
-      }
-
-    // class afters
-    val afters = behavior::class.getAfters()
+  })
+  val behaviorToClassAftersMap = behaviorClasses.associateBy({ it }, { behaviorClass ->
+    val afters = behaviorClass.getAfters()
     afters
       .map { afterType -> 
         val include = afterType.include
         val exclude = afterType.exclude
-        behaviors.map { it::class }.filter { behavior ->
-          include.any { behavior.isSubclassOf(it) } && exclude.none { behavior.isSubclassOf(it) }
+        behaviorClasses.filter { behaviorClass ->
+          include.any { behaviorClass.isSubclassOf(it) } && exclude.none { behaviorClass.isSubclassOf(it) }
         }
       }
       .flatten()
@@ -64,9 +59,22 @@ fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): List<EventList
       .map { it.getEventListeners() }
       .flatten()
       .map { eventListenerToInfoMap.get(it)!! }
-      .forEach { targetEventListenerInfo ->
-        eventListenerInfos.forEach { graph.addEdge(targetEventListenerInfo, it) }
-      }
+  })
+
+  // create directed edges
+  behaviorClasses.forEach { behaviorClass ->
+    val eventListeners = behaviorClass.getEventListeners()
+    val eventListenerInfos = eventListeners.map { eventListenerToInfoMap.get(it)!! }
+
+    // class befores
+    behaviorToClassBeforesMap.get(behaviorClass)!!.forEach { targetEventListenerInfo ->
+      eventListenerInfos.forEach { graph.addEdge(it, targetEventListenerInfo) }
+    }
+
+    // class afters
+    behaviorToClassAftersMap.get(behaviorClass)!!.forEach { targetEventListenerInfo ->
+      eventListenerInfos.forEach { graph.addEdge(targetEventListenerInfo, it) }
+    }
 
     eventListenerInfos.forEach { eventListenerInfo ->
       val eventListener = eventListenerInfo.eventListener
@@ -77,8 +85,8 @@ fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): List<EventList
         .map { beforeType -> 
           val include = beforeType.include
           val exclude = beforeType.exclude
-          behaviors.map { it::class }.filter { behavior ->
-            include.any { behavior.isSubclassOf(it) } && exclude.none { behavior.isSubclassOf(it) }
+          behaviorClasses.filter { behaviorClass ->
+            include.any { behaviorClass.isSubclassOf(it) } && exclude.none { behaviorClass.isSubclassOf(it) }
           }
         }
         .flatten()
@@ -96,8 +104,8 @@ fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): List<EventList
         .map { afterType -> 
           val include = afterType.include
           val exclude = afterType.exclude
-          behaviors.map { it::class }.filter { behavior ->
-            include.any { behavior.isSubclassOf(it) } && exclude.none { behavior.isSubclassOf(it) }
+          behaviorClasses.filter { behaviorClass ->
+            include.any { behaviorClass.isSubclassOf(it) } && exclude.none { behaviorClass.isSubclassOf(it) }
           }
         }
         .flatten()
