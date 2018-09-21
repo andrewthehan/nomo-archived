@@ -7,6 +7,7 @@ import com.github.andrewthehan.nomo.core.ecs.util.EventListenerInfo
 import com.github.andrewthehan.nomo.core.ecs.util.getBefores
 import com.github.andrewthehan.nomo.core.ecs.util.getAfters
 import com.github.andrewthehan.nomo.util.collections.Graph
+import com.github.andrewthehan.nomo.util.collections.MultiMap
 
 import kotlin.reflect.KFunction
 
@@ -28,7 +29,7 @@ fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): List<EventList
   })
 
   val graph = Graph<EventListenerInfo>()
-  val eventListenerToInfoMap = HashMap<KFunction<*>, EventListenerInfo>()
+  val eventListenerToInfoMap = MultiMap<KFunction<*>, EventListenerInfo>()
 
   // create event listener nodes
   behaviors.forEach { behavior ->
@@ -44,12 +45,12 @@ fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): List<EventList
   // create directed edges
   behaviorClasses.forEach { behaviorClass ->
     val eventListeners = behaviorClass.getEventListeners()
-    val eventListenerInfos = eventListeners.map { eventListenerToInfoMap.get(it)!! }
+    val eventListenerInfos = eventListeners.flatMap { eventListenerToInfoMap.get(it) }
 
     // class befores
     behaviorClassToBeforeEventListenersMap
       .get(behaviorClass)!!
-      .map { eventListenerToInfoMap.get(it)!! }
+      .flatMap { eventListenerToInfoMap.get(it) }
       .forEach { targetEventListenerInfo ->
         eventListenerInfos.forEach { graph.addEdge(it, targetEventListenerInfo) }
       }
@@ -57,7 +58,7 @@ fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): List<EventList
     // class afters
     behaviorClassToAfterEventListenersMap
       .get(behaviorClass)!!
-      .map { eventListenerToInfoMap.get(it)!! }
+      .flatMap { eventListenerToInfoMap.get(it) }
       .forEach { targetEventListenerInfo ->
         eventListenerInfos.forEach { graph.addEdge(targetEventListenerInfo, it) }
       }
@@ -70,7 +71,7 @@ fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): List<EventList
       behaviorClasses
         .filter { targetBehaviorClass -> functionBefores.any { it.accepts(targetBehaviorClass) } }
         .flatMap { it.getEventListeners() }
-        .map { eventListenerToInfoMap.get(it)!! }
+        .flatMap { eventListenerToInfoMap.get(it) }
         .forEach { targetEventListenerInfo ->
           graph.addEdge(eventListenerInfo, targetEventListenerInfo)
         }
@@ -80,13 +81,12 @@ fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): List<EventList
       behaviorClasses
         .filter { targetBehaviorClass -> functionAfters.any { it.accepts(targetBehaviorClass) } }
         .flatMap { it.getEventListeners() }
-        .map { eventListenerToInfoMap.get(it)!! }
+        .flatMap { eventListenerToInfoMap.get(it) }
         .forEach { targetEventListenerInfo ->
           graph.addEdge(targetEventListenerInfo, eventListenerInfo)
         }
     }
   }
 
-  // find topological sort
   return graph.getTopologicalSort()
 }

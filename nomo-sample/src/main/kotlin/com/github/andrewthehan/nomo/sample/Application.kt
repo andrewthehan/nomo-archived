@@ -4,12 +4,13 @@ import com.github.andrewthehan.nomo.core.ecs.annotations.*
 import com.github.andrewthehan.nomo.core.ecs.managers.*
 import com.github.andrewthehan.nomo.core.ecs.tasks.*
 import com.github.andrewthehan.nomo.core.ecs.types.*
-import com.github.andrewthehan.nomo.core.ecs.EcsEngine
+import com.github.andrewthehan.nomo.core.ecs.*
 import com.github.andrewthehan.nomo.sdk.ecs.entity.*
 import com.github.andrewthehan.nomo.sdk.ecs.components.attributes.*
 import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.*
 import com.github.andrewthehan.nomo.sdk.ecs.events.*
 import com.github.andrewthehan.nomo.sdk.ecs.systems.*
+import com.github.andrewthehan.nomo.util.*
 
 fun main(args: Array<String>) {
   println("Hello, world!")
@@ -34,24 +35,26 @@ fun main(args: Array<String>) {
     add(UpdateSystem())
   }
 
-  createEntity(ecsEngine)
+  createEntity(ecsEngine, "AAA", 200, .8f)
+  createEntity(ecsEngine, "BBB", 100, .1f)
 
   // Simulate game loop
-  (0..15).forEach {
+  while(ecsEngine.managers.get<EntityComponentManager>()!!.getAllEntities().any()) {
     println("******** LOOP ********")
     ecsEngine.update(10f)
   }
 }
 
-fun createEntity(ecsEngine: EcsEngine) {
+fun createEntity(ecsEngine: EcsEngine, entity: Entity, health: Int, armor: Float) {
   val entityComponentManager = ecsEngine.managers.get<EntityComponentManager>()!!
-  entity(entityComponentManager) {
-    + HealthAttribute(100)
-    + ContinuousDamageBehavior()
-    + DamageableBehavior()
-    + ArmorBehavior(.8f)
-    + DeathBehavior()
-    + EventLogBehavior()
+
+  entity.apply {
+    entityComponentManager.add(this, HealthAttribute(health))
+    entityComponentManager.add(this, ContinuousDamageBehavior())
+    entityComponentManager.add(this, DamageableBehavior())
+    entityComponentManager.add(this, ArmorBehavior(armor))
+    entityComponentManager.add(this, DeathBehavior())
+    entityComponentManager.add(this, EventLogBehavior())
   }
 }
 
