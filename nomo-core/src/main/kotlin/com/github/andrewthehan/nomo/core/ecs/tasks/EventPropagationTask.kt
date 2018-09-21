@@ -36,6 +36,10 @@ class EventPropagationTask(override val ecsEngine: EcsEngine) : Task {
     eventManager.events.clear()
 
     eventListenerOrder.forEach { (behavior, eventListener, eventType) ->
+      if (!entityComponentManager.containsComponent(behavior)) {
+        return@forEach
+      }
+
       events
         .filter { it.event::class.isSubclassOf(eventType) }
         .filter { 

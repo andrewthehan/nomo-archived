@@ -5,7 +5,6 @@ import com.github.andrewthehan.nomo.core.ecs.managers.*
 import com.github.andrewthehan.nomo.core.ecs.tasks.*
 import com.github.andrewthehan.nomo.core.ecs.types.*
 import com.github.andrewthehan.nomo.core.ecs.*
-import com.github.andrewthehan.nomo.sdk.ecs.entity.*
 import com.github.andrewthehan.nomo.sdk.ecs.components.attributes.*
 import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.*
 import com.github.andrewthehan.nomo.sdk.ecs.events.*
@@ -35,19 +34,18 @@ fun main(args: Array<String>) {
     add(UpdateSystem())
   }
 
-  createEntity(ecsEngine, "AAA", 200, .8f)
-  createEntity(ecsEngine, "BBB", 100, .1f)
+  createEntity(ecsEngine.managers.get<EntityComponentManager>()!!, "AAA", 200, .8f)
+  createEntity(ecsEngine.managers.get<EntityComponentManager>()!!, "BBB", 100, .1f)
 
   // Simulate game loop
   while(ecsEngine.managers.get<EntityComponentManager>()!!.getAllEntities().any()) {
     println("******** LOOP ********")
     ecsEngine.update(10f)
   }
+ 
 }
 
-fun createEntity(ecsEngine: EcsEngine, entity: Entity, health: Int, armor: Float) {
-  val entityComponentManager = ecsEngine.managers.get<EntityComponentManager>()!!
-
+fun createEntity(entityComponentManager: EntityComponentManager, entity: Entity, health: Int, armor: Float) {
   entity.apply {
     entityComponentManager.add(this, HealthAttribute(health))
     entityComponentManager.add(this, ContinuousDamageBehavior())
