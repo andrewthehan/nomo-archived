@@ -1,11 +1,11 @@
-package com.github.andrewthehan.nomo.core.ecs.tasks
+package com.github.andrewthehan.nomo.sdk.ecs.tasks
 
-import com.github.andrewthehan.nomo.core.ecs.managers.SystemsManager
 import com.github.andrewthehan.nomo.core.ecs.types.EcsObject
 import com.github.andrewthehan.nomo.core.ecs.types.Manager
 import com.github.andrewthehan.nomo.core.ecs.types.Task
 import com.github.andrewthehan.nomo.core.ecs.EcsEngine
-import com.github.andrewthehan.nomo.core.ecs.util.getInjectableProperties
+import com.github.andrewthehan.nomo.sdk.ecs.managers.SystemsManager
+import com.github.andrewthehan.nomo.sdk.ecs.util.getInjectableProperties
 
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf

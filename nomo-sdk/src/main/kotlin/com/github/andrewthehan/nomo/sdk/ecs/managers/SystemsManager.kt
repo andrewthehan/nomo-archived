@@ -1,4 +1,4 @@
-package com.github.andrewthehan.nomo.core.ecs.managers
+package com.github.andrewthehan.nomo.sdk.ecs.managers
 
 import com.github.andrewthehan.nomo.core.ecs.types.Manager
 import com.github.andrewthehan.nomo.core.ecs.types.System

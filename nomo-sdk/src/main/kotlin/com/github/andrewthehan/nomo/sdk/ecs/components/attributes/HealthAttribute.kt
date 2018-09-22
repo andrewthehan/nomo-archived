@@ -1,6 +1,6 @@
 package com.github.andrewthehan.nomo.sdk.ecs.components.attributes
 
-import com.github.andrewthehan.nomo.core.ecs.interfaces.Exclusive
+import com.github.andrewthehan.nomo.sdk.ecs.interfaces.Exclusive
 import com.github.andrewthehan.nomo.util.*
 
 class HealthAttribute<NumberType : Number>(initialHealth: NumberType) : NumberAttribute<NumberType>(initialHealth), Exclusive {

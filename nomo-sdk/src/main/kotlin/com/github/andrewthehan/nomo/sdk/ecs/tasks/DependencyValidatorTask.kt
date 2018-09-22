@@ -1,11 +1,11 @@
-package com.github.andrewthehan.nomo.core.ecs.tasks
+package com.github.andrewthehan.nomo.sdk.ecs.tasks
 
-import com.github.andrewthehan.nomo.core.ecs.managers.EntityComponentManager
-import com.github.andrewthehan.nomo.core.ecs.exceptions.MissingDependencyException
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
 import com.github.andrewthehan.nomo.core.ecs.types.Task
-import com.github.andrewthehan.nomo.core.ecs.util.getDependencies
 import com.github.andrewthehan.nomo.core.ecs.EcsEngine
+import com.github.andrewthehan.nomo.sdk.ecs.exceptions.MissingDependencyException
+import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
+import com.github.andrewthehan.nomo.sdk.ecs.util.getDependencies
 
 class DependencyValidatorTask(override val ecsEngine: EcsEngine) : Task {
   private val entityComponentManager by lazy { ecsEngine.managers.get<EntityComponentManager>()!! }

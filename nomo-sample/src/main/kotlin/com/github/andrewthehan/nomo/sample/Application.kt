@@ -1,11 +1,14 @@
 package com.github.andrewthehan.nomo.sample
 
-import com.github.andrewthehan.nomo.core.ecs.annotations.*
 import com.github.andrewthehan.nomo.core.ecs.interfaces.*
-import com.github.andrewthehan.nomo.core.ecs.managers.*
-import com.github.andrewthehan.nomo.core.ecs.tasks.*
 import com.github.andrewthehan.nomo.core.ecs.types.*
 import com.github.andrewthehan.nomo.core.ecs.*
+import com.github.andrewthehan.nomo.sdk.ecs.annotations.*
+import com.github.andrewthehan.nomo.sdk.ecs.components.attributes.*
+import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.*
+import com.github.andrewthehan.nomo.sdk.ecs.interfaces.*
+import com.github.andrewthehan.nomo.sdk.ecs.managers.*
+import com.github.andrewthehan.nomo.sdk.ecs.tasks.*
 import com.github.andrewthehan.nomo.sdk.ecs.components.attributes.*
 import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.*
 import com.github.andrewthehan.nomo.sdk.ecs.events.*

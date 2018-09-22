@@ -1,4 +1,4 @@
-package com.github.andrewthehan.nomo.core.ecs.annotations
+package com.github.andrewthehan.nomo.sdk.ecs.annotations
 
 import com.github.andrewthehan.nomo.core.ecs.types.Event
 

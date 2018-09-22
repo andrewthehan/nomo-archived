@@ -1,19 +1,19 @@
-package com.github.andrewthehan.nomo.core.ecs.tasks
+package com.github.andrewthehan.nomo.sdk.ecs.tasks
 
-import com.github.andrewthehan.nomo.core.ecs.annotations.EventListener
-import com.github.andrewthehan.nomo.core.ecs.managers.EventManager
-import com.github.andrewthehan.nomo.core.ecs.managers.EntityComponentManager
-import com.github.andrewthehan.nomo.core.ecs.tasks.InjectionTask
 import com.github.andrewthehan.nomo.core.ecs.types.Behavior
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
 import com.github.andrewthehan.nomo.core.ecs.types.Event
 import com.github.andrewthehan.nomo.core.ecs.types.Task
-import com.github.andrewthehan.nomo.core.ecs.util.EventDispatchInfo
-import com.github.andrewthehan.nomo.core.ecs.util.getEventListeners
-import com.github.andrewthehan.nomo.core.ecs.util.getEventListenerOrder
+import com.github.andrewthehan.nomo.core.ecs.EcsEngine
+import com.github.andrewthehan.nomo.sdk.ecs.annotations.EventListener
+import com.github.andrewthehan.nomo.sdk.ecs.managers.EventManager
+import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
+import com.github.andrewthehan.nomo.sdk.ecs.tasks.InjectionTask
+import com.github.andrewthehan.nomo.sdk.ecs.util.EventDispatchInfo
+import com.github.andrewthehan.nomo.sdk.ecs.util.getEventListeners
+import com.github.andrewthehan.nomo.sdk.ecs.util.getEventListenerOrder
 import com.github.andrewthehan.nomo.util.filterAs
 import com.github.andrewthehan.nomo.util.getAnnotation
-import com.github.andrewthehan.nomo.core.ecs.EcsEngine
 
 import kotlin.reflect.full.functions
 import kotlin.reflect.full.isSubclassOf

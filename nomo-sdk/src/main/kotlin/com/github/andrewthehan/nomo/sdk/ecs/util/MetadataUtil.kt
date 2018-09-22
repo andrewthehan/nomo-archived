@@ -1,12 +1,12 @@
-package com.github.andrewthehan.nomo.core.ecs.util
+package com.github.andrewthehan.nomo.sdk.ecs.util
 
-import com.github.andrewthehan.nomo.core.ecs.annotations.After
-import com.github.andrewthehan.nomo.core.ecs.annotations.Afters
-import com.github.andrewthehan.nomo.core.ecs.annotations.Before
-import com.github.andrewthehan.nomo.core.ecs.annotations.Befores
-import com.github.andrewthehan.nomo.core.ecs.annotations.Dependent
-import com.github.andrewthehan.nomo.core.ecs.annotations.EventListener
-import com.github.andrewthehan.nomo.core.ecs.annotations.MutableInject
+import com.github.andrewthehan.nomo.sdk.ecs.annotations.After
+import com.github.andrewthehan.nomo.sdk.ecs.annotations.Afters
+import com.github.andrewthehan.nomo.sdk.ecs.annotations.Before
+import com.github.andrewthehan.nomo.sdk.ecs.annotations.Befores
+import com.github.andrewthehan.nomo.sdk.ecs.annotations.Dependent
+import com.github.andrewthehan.nomo.sdk.ecs.annotations.EventListener
+import com.github.andrewthehan.nomo.sdk.ecs.annotations.MutableInject
 import com.github.andrewthehan.nomo.util.hasAnnotation
 
 import kotlin.reflect.full.findAnnotation

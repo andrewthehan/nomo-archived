@@ -1,10 +1,10 @@
-package com.github.andrewthehan.nomo.core.ecs.util
+package com.github.andrewthehan.nomo.sdk.ecs.util
 
-import com.github.andrewthehan.nomo.core.ecs.annotations.accepts
-import com.github.andrewthehan.nomo.core.ecs.annotations.EventListener
 import com.github.andrewthehan.nomo.core.ecs.types.Behavior
-import com.github.andrewthehan.nomo.core.ecs.util.getBefores
-import com.github.andrewthehan.nomo.core.ecs.util.getAfters
+import com.github.andrewthehan.nomo.sdk.ecs.annotations.accepts
+import com.github.andrewthehan.nomo.sdk.ecs.annotations.EventListener
+import com.github.andrewthehan.nomo.sdk.ecs.util.getBefores
+import com.github.andrewthehan.nomo.sdk.ecs.util.getAfters
 import com.github.andrewthehan.nomo.util.collections.Graph
 import com.github.andrewthehan.nomo.util.collections.MultiMap
 
