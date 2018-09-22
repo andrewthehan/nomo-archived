@@ -10,17 +10,28 @@ import com.github.andrewthehan.nomo.core.ecs.EcsEngine
 class DependencyValidatorTask(override val ecsEngine: EcsEngine) : Task {
   private val entityComponentManager by lazy { ecsEngine.managers.get<EntityComponentManager>()!! }
 
-  fun hasDependencies(entity: Entity) {
+  private fun checkDependencies(entity: Entity) {
     val componentClasses = entityComponentManager.getAllComponents(entity).map { it::class }
-    componentClasses.forEach {
-      val missingDependencies = it.getDependencies().subtract(componentClasses)
-      if (missingDependencies.any()) {
-        throw MissingDependencyException(it, missingDependencies)
+    val isMissingDependencies = componentClasses
+      .map { it.getDependencies() }
+      .filter { it.any() }
+      .any {
+        val missingDependencies = it.subtract(componentClasses)
+        missingDependencies.any()
       }
+    
+    if (isMissingDependencies) {
+      val missingDependencies = componentClasses.flatMap {
+        it.getDependencies().subtract(componentClasses)
+      }
+      throw MissingDependencyException(entity, missingDependencies)
     }
   }
 
   override fun update(delta: Float) {
-    entityComponentManager.getAllEntities().forEach { hasDependencies(it) }
+    entityComponentManager
+      .getAllEntities()
+      .parallelStream()
+      .forEach { checkDependencies(it) }
   }
 }

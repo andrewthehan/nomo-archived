@@ -35,14 +35,18 @@ fun main(args: Array<String>) {
     add(UpdateSystem())
   }
 
-  (0..1000).forEach {
-    createEntity(ecsEngine.managers.get<EntityComponentManager>()!!, "#${it}", 1000, .1f)
+  (0..10).forEach {
+    createEntity(ecsEngine.managers.get<EntityComponentManager>()!!, "#${it}", 50, .1f)
+  }
+
+  (0..100000).forEach {
+    createEntity2(ecsEngine.managers.get<EntityComponentManager>()!!, "##${it}", 1000)
   }
 
   // Simulate game loop
   var i = 0
-  // (0..10).forEach {
-  while(ecsEngine.managers.get<EntityComponentManager>()!!.getAllEntities().any()) {
+  (0..100).forEach {
+  // while(ecsEngine.managers.get<EntityComponentManager>()!!.getAllEntities().any()) {
     println("******** LOOP ${++i} ********")
     ecsEngine.update(10f)
   }
@@ -56,6 +60,15 @@ fun createEntity(entityComponentManager: EntityComponentManager, entity: Entity,
     entityComponentManager.add(this, HealthAttribute(health))
     entityComponentManager.add(this, ArmorBehavior(armor))
     entityComponentManager.add(this, continuousDamageBehavior)
+    entityComponentManager.add(this, DamageableBehavior())
+    entityComponentManager.add(this, deathBehavior)
+    // entityComponentManager.add(this, EventLogBehavior())
+  }
+}
+
+fun createEntity2(entityComponentManager: EntityComponentManager, entity: Entity, health: Int) {
+  entity.apply {
+    entityComponentManager.add(this, HealthAttribute(health))
     entityComponentManager.add(this, DamageableBehavior())
     entityComponentManager.add(this, deathBehavior)
     // entityComponentManager.add(this, EventLogBehavior())
@@ -142,11 +155,7 @@ class DeathBehavior : AbstractBehavior() {
 
   @EventListener(DeathEvent::class)
   fun onDeath(event: DeathEvent) {
-    val entity = entityComponentManager
-      .getEntities(this)
-      .find { it == event.entity }!!
-
     // println("Death.")
-    entityComponentManager.remove(entity)
+    entityComponentManager.remove(event.entity)
   }
 }

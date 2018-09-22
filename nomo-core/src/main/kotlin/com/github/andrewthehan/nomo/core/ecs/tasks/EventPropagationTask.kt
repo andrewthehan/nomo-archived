@@ -31,12 +31,13 @@ class EventPropagationTask(override val ecsEngine: EcsEngine) : Task {
     val allBehaviorClasses = allBehaviors
       .map { it::class }
       .distinct();
+
     val eventListenerOrder = getEventListenerOrder(allBehaviorClasses)
 
     val events = eventManager.events.toSet()
     eventManager.events.clear()
 
-    allBehaviors.forEach { injectionTask.injectManagers(it) }
+    allBehaviors.parallelStream().forEach { injectionTask.injectManagers(it) }
 
     val behaviorClassToBehaviorsMap = allBehaviors.groupBy { it::class }
     val eventClassToEventsMap = events.groupBy { it.event::class }
@@ -49,6 +50,7 @@ class EventPropagationTask(override val ecsEngine: EcsEngine) : Task {
       if (relevantEvents.none()) {
         return@forEach
       }
+
       val relevantBehaviors = allBehaviorClasses
         .filter { it.functions.contains(eventListener) }
         .flatMap { behaviorClassToBehaviorsMap.get(it)!! }

@@ -9,7 +9,7 @@ class EcsEngine : Updatable<Float> {
   val managers = TypedSet<Manager>()
   val tasks = TypedSet<Task>()
 
-  override fun update(delta: Float) = tasks.forEach { 
+  override fun update(delta: Float) = tasks.forEach {
     it.update(delta)
   }
 }

@@ -42,17 +42,17 @@ class EntityComponentManager(override val ecsEngine: EcsEngine) : Manager {
 
   fun containsComponent(component: Component) = entitiesToComponentsMap.containsValue(component)
 
-  fun getAllEntities() = entitiesToComponentsMap.keys
+  fun getAllEntities() = entitiesToComponentsMap.keys.toSet()
   
   fun <PendantComponent> getEntity(component: PendantComponent) where PendantComponent : Component, PendantComponent : Pendant =
     entitiesToComponentsMap.reverse[component].singleOrNull()
     
 
-  fun getEntities(component: Component) = entitiesToComponentsMap.reverse[component]
+  fun getEntities(component: Component) = entitiesToComponentsMap.reverse[component].toSet()
 
-  fun getAllComponents() = entitiesToComponentsMap.values
+  fun getAllComponents() = entitiesToComponentsMap.values.toSet()
 
-  fun getAllComponents(entity: Entity) = entitiesToComponentsMap[entity]
+  fun getAllComponents(entity: Entity) = entitiesToComponentsMap[entity].toSet()
 
   inline fun <reified ExclusiveComponent> getComponent(entity: Entity) where ExclusiveComponent : Component, ExclusiveComponent : Exclusive
     = entitiesToComponentsMap[entity].singleAs<ExclusiveComponent>()
