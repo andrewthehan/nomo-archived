@@ -14,7 +14,7 @@ class DependencyValidatorTask(override val ecsEngine: EcsEngine) : Task {
     val componentClasses = entityComponentManager.getAllComponents(entity).map { it::class }
     componentClasses.forEach {
       val missingDependencies = it.getDependencies().subtract(componentClasses)
-      if (!missingDependencies.isEmpty()) {
+      if (missingDependencies.any()) {
         throw MissingDependencyException(it, missingDependencies)
       }
     }

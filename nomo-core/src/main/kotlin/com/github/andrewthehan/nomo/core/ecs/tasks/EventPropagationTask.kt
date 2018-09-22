@@ -15,6 +15,7 @@ import com.github.andrewthehan.nomo.util.filterAs
 import com.github.andrewthehan.nomo.util.getAnnotation
 import com.github.andrewthehan.nomo.core.ecs.EcsEngine
 
+import kotlin.reflect.full.functions
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.KFunction
 
@@ -23,30 +24,44 @@ class EventPropagationTask(override val ecsEngine: EcsEngine) : Task {
   private val entityComponentManager by lazy { ecsEngine.managers.get<EntityComponentManager>()!! }
   private val injectionTask by lazy { ecsEngine.tasks.get<InjectionTask>()!! }
 
-  private fun <EventListenerFunction : @EventListener KFunction<*>> propagateEvent(behavior: Behavior, eventListener: EventListenerFunction, event: Event) {
-    injectionTask.injectManagers(behavior)
-    eventListener.call(behavior, event)
-  }
-
   override fun update(delta: Float) {
-    val allBehaviors = entityComponentManager.getAllComponents().filterAs<Behavior>();
-    val eventListenerOrder = getEventListenerOrder(allBehaviors)
+    val allBehaviors = entityComponentManager
+      .getAllComponents()
+      .filterAs<Behavior>()
+    val allBehaviorClasses = allBehaviors
+      .map { it::class }
+      .distinct();
+    val eventListenerOrder = getEventListenerOrder(allBehaviorClasses)
 
     val events = eventManager.events.toSet()
     eventManager.events.clear()
 
-    eventListenerOrder.forEach { (behavior, eventListener, eventType) ->
-      if (!entityComponentManager.containsComponent(behavior)) {
+    allBehaviors.forEach { injectionTask.injectManagers(it) }
+
+    val behaviorClassToBehaviorsMap = allBehaviors.groupBy { it::class }
+    val eventClassToEventsMap = events.groupBy { it.event::class }
+
+    eventListenerOrder.forEach { eventListener ->
+      val eventType = eventListener.getAnnotation<EventListener>().value
+      val relevantEvents = eventClassToEventsMap
+        .filter { it.key.isSubclassOf(eventType) }
+        .flatMap { it.value }
+      if (relevantEvents.none()) {
         return@forEach
       }
+      val relevantBehaviors = allBehaviorClasses
+        .filter { it.functions.contains(eventListener) }
+        .flatMap { behaviorClassToBehaviorsMap.get(it)!! }
 
-      events
-        .filter { it.event::class.isSubclassOf(eventType) }
-        .filter { 
-          val targetBehaviors: Iterable<Behavior> = it.behaviors?.asIterable() ?: allBehaviors
-          targetBehaviors.contains(behavior)
+      relevantEvents.forEach { eventInfo ->
+        val behaviors = eventInfo.behaviors?.filter { it::class.functions.contains(eventListener) } ?: relevantBehaviors
+        behaviors.forEach inner@{
+          if (!entityComponentManager.containsComponent(it)) {
+            return@inner
+          }
+          eventListener.call(it, eventInfo.event)
         }
-        .forEach { propagateEvent(behavior, eventListener, it.event) }
+      }
     }
   }
 }

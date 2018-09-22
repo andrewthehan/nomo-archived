@@ -3,77 +3,53 @@ package com.github.andrewthehan.nomo.core.ecs.util
 import com.github.andrewthehan.nomo.core.ecs.annotations.accepts
 import com.github.andrewthehan.nomo.core.ecs.annotations.EventListener
 import com.github.andrewthehan.nomo.core.ecs.types.Behavior
-import com.github.andrewthehan.nomo.core.ecs.util.EventListenerInfo
 import com.github.andrewthehan.nomo.core.ecs.util.getBefores
 import com.github.andrewthehan.nomo.core.ecs.util.getAfters
 import com.github.andrewthehan.nomo.util.collections.Graph
 import com.github.andrewthehan.nomo.util.collections.MultiMap
 
+import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 
-fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): List<EventListenerInfo> {
-  val behaviorClasses = behaviors.map { it::class }
-
-  // create metadata for each behavior's class's befores/afters
-  val behaviorClassToBeforeEventListenersMap = behaviorClasses.associateBy({ it }, { behaviorClass ->
-    val classBefores = behaviorClass.getBefores()
-    behaviorClasses
-      .filter { targetBehaviorClass -> classBefores.any { it.accepts(targetBehaviorClass) } }
-      .flatMap { it.getEventListeners() }
-  })
-  val behaviorClassToAfterEventListenersMap = behaviorClasses.associateBy({ it }, { behaviorClass ->
-    val classAfters = behaviorClass.getAfters()
-    behaviorClasses
-      .filter { targetBehaviorClass -> classAfters.any { it.accepts(targetBehaviorClass) } }
-      .flatMap { it.getEventListeners() }
-  })
-
-  val graph = Graph<EventListenerInfo>()
-  val eventListenerToInfoMap = MultiMap<KFunction<*>, EventListenerInfo>()
+fun getEventListenerOrder(behaviorClasses: Iterable<KClass<out Behavior>>): List<KFunction<*>> {
+  val graph = Graph<KFunction<*>>()
 
   // create event listener nodes
-  behaviors.forEach { behavior ->
-    val eventListeners = behavior::class.getEventListeners()
-    eventListeners
-      .map { EventListenerInfo(behavior, it) }
-      .forEach {
-        graph.addNode(it)
-        eventListenerToInfoMap.put(it.eventListener, it)
-      }
-  }
+  behaviorClasses
+    .flatMap { it.getEventListeners() }
+    .distinct()
+    .forEach { graph.addNode(it) }
 
   // create directed edges
   behaviorClasses.forEach { behaviorClass ->
     val eventListeners = behaviorClass.getEventListeners()
-    val eventListenerInfos = eventListeners.flatMap { eventListenerToInfoMap.get(it) }
 
     // class befores
-    behaviorClassToBeforeEventListenersMap
-      .get(behaviorClass)!!
-      .flatMap { eventListenerToInfoMap.get(it) }
-      .forEach { targetEventListenerInfo ->
-        eventListenerInfos.forEach { graph.addEdge(it, targetEventListenerInfo) }
+    val classBefores = behaviorClass.getBefores()
+    behaviorClasses
+      .filter { targetBehaviorClass -> classBefores.any { it.accepts(targetBehaviorClass) } }
+      .flatMap { it.getEventListeners() }
+      .forEach { targetEventListener ->
+        eventListeners.forEach { graph.addEdge(it, targetEventListener) }
       }
 
     // class afters
-    behaviorClassToAfterEventListenersMap
-      .get(behaviorClass)!!
-      .flatMap { eventListenerToInfoMap.get(it) }
-      .forEach { targetEventListenerInfo ->
-        eventListenerInfos.forEach { graph.addEdge(targetEventListenerInfo, it) }
+    val classAfters = behaviorClass.getAfters()
+    behaviorClasses
+      .filter { targetBehaviorClass -> classAfters.any { it.accepts(targetBehaviorClass) } }
+      .flatMap { it.getEventListeners() }
+      .forEach { targetEventListener ->
+        eventListeners.forEach { graph.addEdge(targetEventListener, it) }
       }
 
-    eventListenerInfos.forEach { eventListenerInfo ->
-      val eventListener = eventListenerInfo.eventListener
-
+    eventListeners.forEach { eventListener ->
       // function befores
       val functionBefores = eventListener.getBefores()
       behaviorClasses
         .filter { targetBehaviorClass -> functionBefores.any { it.accepts(targetBehaviorClass) } }
         .flatMap { it.getEventListeners() }
-        .flatMap { eventListenerToInfoMap.get(it) }
-        .forEach { targetEventListenerInfo ->
-          graph.addEdge(eventListenerInfo, targetEventListenerInfo)
+        .forEach { targetEventListener ->
+          graph.addEdge(eventListener, targetEventListener)
         }
       
       // function afters
@@ -81,9 +57,8 @@ fun <T : Behavior> getEventListenerOrder(behaviors: Iterable<T>): List<EventList
       behaviorClasses
         .filter { targetBehaviorClass -> functionAfters.any { it.accepts(targetBehaviorClass) } }
         .flatMap { it.getEventListeners() }
-        .flatMap { eventListenerToInfoMap.get(it) }
-        .forEach { targetEventListenerInfo ->
-          graph.addEdge(targetEventListenerInfo, eventListenerInfo)
+        .forEach { targetEventListener ->
+          graph.addEdge(targetEventListener, eventListener)
         }
     }
   }

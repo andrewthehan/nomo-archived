@@ -1,9 +1,9 @@
 package com.github.andrewthehan.nomo.core.ecs.managers
 
-import com.github.andrewthehan.nomo.core.ecs.annotations.Exclusive
-import com.github.andrewthehan.nomo.core.ecs.annotations.Pendant
 import com.github.andrewthehan.nomo.core.ecs.exceptions.ExclusiveException
 import com.github.andrewthehan.nomo.core.ecs.exceptions.PendantException
+import com.github.andrewthehan.nomo.core.ecs.interfaces.Exclusive
+import com.github.andrewthehan.nomo.core.ecs.interfaces.Pendant
 import com.github.andrewthehan.nomo.core.ecs.types.Component
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
 import com.github.andrewthehan.nomo.core.ecs.types.Manager
@@ -18,12 +18,12 @@ class EntityComponentManager(override val ecsEngine: EcsEngine) : Manager {
 
   inline fun <reified ActualComponent: Component> add(entity: Entity, component: ActualComponent) {
     val componentClass = component::class
-    if (componentClass.hasAnnotation<Exclusive>()) {
+    if (componentClass is Exclusive) {
       if (entitiesToComponentsMap[entity].any { it is ActualComponent }) {
         throw ExclusiveException()
       }
     }
-    if (componentClass.hasAnnotation<Pendant>()) {
+    if (componentClass is Pendant) {
       if (!entitiesToComponentsMap.reverse[component].isEmpty()) {
         throw PendantException()
       }
@@ -44,7 +44,9 @@ class EntityComponentManager(override val ecsEngine: EcsEngine) : Manager {
 
   fun getAllEntities() = entitiesToComponentsMap.keys
   
-  fun <PendantComponent: @Pendant Component> getEntity(component: PendantComponent) = entitiesToComponentsMap.reverse[component].singleOrNull()
+  fun <PendantComponent> getEntity(component: PendantComponent) where PendantComponent : Component, PendantComponent : Pendant =
+    entitiesToComponentsMap.reverse[component].singleOrNull()
+    
 
   fun getEntities(component: Component) = entitiesToComponentsMap.reverse[component]
 
@@ -52,7 +54,7 @@ class EntityComponentManager(override val ecsEngine: EcsEngine) : Manager {
 
   fun getAllComponents(entity: Entity) = entitiesToComponentsMap[entity]
 
-  inline fun <reified ExclusiveComponent: @Exclusive Component> getComponent(entity: Entity)
+  inline fun <reified ExclusiveComponent> getComponent(entity: Entity) where ExclusiveComponent : Component, ExclusiveComponent : Exclusive
     = entitiesToComponentsMap[entity].singleAs<ExclusiveComponent>()
 
   inline fun <reified ActualComponent: Component> getComponents(entity: Entity)

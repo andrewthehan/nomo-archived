@@ -1,10 +1,9 @@
 package com.github.andrewthehan.nomo.sdk.ecs.components.attributes
 
-import com.github.andrewthehan.nomo.core.ecs.annotations.Exclusive
+import com.github.andrewthehan.nomo.core.ecs.interfaces.Exclusive
 import com.github.andrewthehan.nomo.util.*
 
-@Exclusive
-class HealthAttribute<NumberType : Number>(initialHealth: NumberType) : NumberAttribute<NumberType>(initialHealth) {
+class HealthAttribute<NumberType : Number>(initialHealth: NumberType) : NumberAttribute<NumberType>(initialHealth), Exclusive {
   fun isAlive(): Boolean = this.value.isPositive()
   fun isDead(): Boolean = this.value.isZero()
 

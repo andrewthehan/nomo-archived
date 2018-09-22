@@ -15,19 +15,18 @@ class EventManager(override val ecsEngine: EcsEngine) : Manager {
 
   fun dispatchEvent(event: Event) = events.add(EventDispatchInfo(event, null))
 
-  fun dispatchEvent(event: Event, behavior: Behavior) = events.add(EventDispatchInfo(event, arrayOf(behavior)))
+  fun dispatchEvent(event: Event, behavior: Behavior) = events.add(EventDispatchInfo(event, setOf(behavior)))
 
-  fun dispatchEvent(event: Event, behaviors: Array<Behavior>) = events.add(EventDispatchInfo(event, behaviors))
+  fun dispatchEvent(event: Event, behaviors: Collection<Behavior>) = events.add(EventDispatchInfo(event, behaviors))
 
   fun dispatchEvent(event: Event, entity: Entity)
-    = events.add(EventDispatchInfo(event, entityComponentManager.getComponents<Behavior>(entity).toTypedArray()))
+    = events.add(EventDispatchInfo(event, entityComponentManager.getComponents<Behavior>(entity).toSet()))
 
-  fun dispatchEvent(event: Event, entities: Array<Entity>) {
+  fun dispatchEvent(event: Event, entities: Collection<Entity>) {
     val behaviors = entities
-      .map { entityComponentManager.getComponents<Behavior>(it) }
-      .flatten()
+      .flatMap { entityComponentManager.getComponents<Behavior>(it) }
       .distinct()
-      .toTypedArray()
+      .toSet()
     events.add(EventDispatchInfo(event, behaviors))
   }
 }
