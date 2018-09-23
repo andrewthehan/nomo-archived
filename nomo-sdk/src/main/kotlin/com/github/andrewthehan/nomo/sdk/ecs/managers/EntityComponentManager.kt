@@ -38,6 +38,14 @@ class EntityComponentManager(override val engine: Engine) : Manager {
     entitiesToComponentsMap.put(entity, component)
   }
 
+  fun add(entity: Entity, components: Array<Component>) = components.forEach { add(entity, it) }
+
+  fun add(entity: Entity, components: Iterable<Component>) = components.forEach { add(entity, it) }
+
+  fun add(entities: Array<Entity>, component: Component) = entities.forEach { add(it, component) }
+
+  fun add(entities: Iterable<Entity>, component: Component) = entities.forEach { add(it, component) }
+
   fun remove(entity: Entity, component: Component) = entitiesToComponentsMap.remove(entity, component)
 
   fun remove(entity: Entity) = entitiesToComponentsMap.removeKey(entity)

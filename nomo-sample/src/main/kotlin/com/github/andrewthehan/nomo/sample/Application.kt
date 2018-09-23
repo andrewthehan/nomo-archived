@@ -78,23 +78,25 @@ val continuousDamageBehavior = ContinuousDamageBehavior()
 val removeOnDeathBehavior = RemoveOnDeathBehavior()
 
 fun createEntity(entityComponentManager: EntityComponentManager, entity: Entity, health: Int, armor: Float) {
-  entity.apply {
-    entityComponentManager.add(this, HealthAttribute(health))
-    entityComponentManager.add(this, ArmorBehavior(armor))
-    entityComponentManager.add(this, continuousDamageBehavior)
-    entityComponentManager.add(this, DamageableBehavior())
-    entityComponentManager.add(this, removeOnDeathBehavior)
-    // entityComponentManager.add(this, EventLogBehavior())
-  }
+  val components = arrayOf(
+    HealthAttribute(health),
+    ArmorBehavior(armor),
+    continuousDamageBehavior,
+    DamageableBehavior(),
+    removeOnDeathBehavior
+    // EventLogBehavior()
+  )
+  entityComponentManager.add(entity, components)
 }
 
 fun createEntity2(entityComponentManager: EntityComponentManager, entity: Entity, health: Int) {
-  entity.apply {
-    entityComponentManager.add(this, HealthAttribute(health))
-    entityComponentManager.add(this, DamageableBehavior())
-    entityComponentManager.add(this, removeOnDeathBehavior)
-    // entityComponentManager.add(this, EventLogBehavior())
-  }
+  val components = arrayOf(
+    HealthAttribute(health),
+    DamageableBehavior(),
+    removeOnDeathBehavior
+    // EventLogBehavior()
+  )
+  entityComponentManager.add(entity, components)
 }
 
 @Befores(
