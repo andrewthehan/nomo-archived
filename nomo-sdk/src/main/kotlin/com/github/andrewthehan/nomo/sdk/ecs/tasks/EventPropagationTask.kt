@@ -17,6 +17,7 @@ import com.github.andrewthehan.nomo.util.getAnnotation
 
 import kotlin.reflect.full.functions
 import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.jvm.jvmErasure
 import kotlin.reflect.KFunction
 
 class EventPropagationTask(override val engine: Engine) : Task {
@@ -43,7 +44,12 @@ class EventPropagationTask(override val engine: Engine) : Task {
     val eventClassToEventsMap = events.groupBy { it.event::class }
 
     eventListenerOrder.forEach { eventListener ->
-      val eventType = eventListener.getAnnotation<EventListener>().value
+      val eventListenerParameters = eventListener.parameters
+      // expect 2 parameters, one internally for the instance and one for the event
+      if (eventListenerParameters.size != 2) {
+        throw IllegalStateException("Event listeners should only have 1 event parameter ${eventListenerParameters}")
+      }
+      val eventType = eventListener.parameters[1].type.jvmErasure
       val relevantEvents = eventClassToEventsMap
         .filter { it.key.isSubclassOf(eventType) }
         .flatMap { it.value }

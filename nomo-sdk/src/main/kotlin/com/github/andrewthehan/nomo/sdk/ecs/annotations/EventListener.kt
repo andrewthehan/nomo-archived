@@ -1,8 +1,4 @@
 package com.github.andrewthehan.nomo.sdk.ecs.annotations
 
-import com.github.andrewthehan.nomo.core.ecs.types.Event
-
-import kotlin.reflect.KClass
-
 @Target(AnnotationTarget.FUNCTION)
-annotation class EventListener(val value: KClass<out Event>)
+annotation class EventListener()

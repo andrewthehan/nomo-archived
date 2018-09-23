@@ -10,7 +10,7 @@ import com.github.andrewthehan.nomo.util.times
 
 @Dependent(DamageableBehavior::class)
 class ArmorBehavior(val reduction: Float) : AbstractBehavior() {
-  @EventListener(DamageEvent::class)
+  @EventListener
   @Befores(
     Before(include = [ DamageableBehavior::class ])
   )

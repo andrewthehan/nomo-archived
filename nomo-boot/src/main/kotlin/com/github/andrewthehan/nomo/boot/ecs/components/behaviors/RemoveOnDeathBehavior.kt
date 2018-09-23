@@ -10,7 +10,7 @@ class RemoveOnDeathBehavior : AbstractBehavior() {
   @MutableInject
   lateinit var entityComponentManager: EntityComponentManager
 
-  @EventListener(DeathEvent::class)
+  @EventListener
   fun onDeath(event: DeathEvent) {
     entityComponentManager.remove(event.entity)
   }

@@ -106,7 +106,7 @@ class EventLogBehavior : AbstractBehavior() {
   @MutableInject
   lateinit var entityComponentManager: EntityComponentManager
 
-  @EventListener(Event::class)
+  @EventListener
   fun log(event: Event) {
     entityComponentManager
       .getEntities(this)
@@ -122,7 +122,7 @@ class ContinuousDamageBehavior : AbstractBehavior() {
   @MutableInject
   lateinit var entityComponentManager: EntityComponentManager
 
-  @EventListener(UpdateEvent::class)
+  @EventListener
   fun drainHealth(event: UpdateEvent) {
     val entities = entityComponentManager.getEntities(this)
     entities.forEach { eventManager.dispatchEvent(DamageEvent(event.delta), it) }

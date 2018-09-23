@@ -18,7 +18,7 @@ class DamageableBehavior : AbstractBehavior() {
   @MutableInject
   lateinit var entityComponentManager: EntityComponentManager
 
-  @EventListener(DamageEvent::class)
+  @EventListener
   fun <NumberType : Number> onDamage(event: DamageEvent<NumberType>) {
     entityComponentManager
       .getEntities(this)
