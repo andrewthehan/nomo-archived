@@ -13,19 +13,25 @@ import com.github.andrewthehan.nomo.util.filterAs
 import com.github.andrewthehan.nomo.util.singleAs
 import com.github.andrewthehan.nomo.util.hasAnnotation
 
+import kotlin.reflect.full.isSubclassOf
+
 class EntityComponentManager(override val engine: Engine) : Manager {
   val entitiesToComponentsMap = BiMultiMap<Entity, Component>()
 
-  inline fun <reified ActualComponent: Component> add(entity: Entity, component: ActualComponent) {
-    val componentClass = component::class
-    if (componentClass is Exclusive) {
-      if (entitiesToComponentsMap[entity].any { it is ActualComponent }) {
-        throw ExclusiveException()
+  fun add(entity: Entity, component: Component) {
+    if (component is Exclusive) {
+      val componentClass = component::class
+      val componentTypeAlreadyBound = entitiesToComponentsMap[entity]
+        .filter { it is Exclusive }
+        .map { it::class }
+        .any { it.isSubclassOf(componentClass) || componentClass.isSubclassOf(it) }
+      if (componentTypeAlreadyBound) {
+        throw ExclusiveException(entity, component::class)
       }
     }
-    if (componentClass is Pendant) {
-      if (!entitiesToComponentsMap.reverse[component].isEmpty()) {
-        throw PendantException()
+    if (component is Pendant) {
+      if (entitiesToComponentsMap.reverse[component].any()) {
+        throw PendantException(component, entitiesToComponentsMap.reverse[component])
       }
     }
 
