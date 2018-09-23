@@ -1,4 +1,4 @@
-package com.github.andrewthehan.nomo.sdk.ecs.components.attributes
+package com.github.andrewthehan.nomo.boot.ecs.components.attributes
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

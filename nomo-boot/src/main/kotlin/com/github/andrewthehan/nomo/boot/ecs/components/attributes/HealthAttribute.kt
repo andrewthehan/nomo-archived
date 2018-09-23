@@ -8,7 +8,7 @@ class HealthAttribute<NumberType : Number>(initialHealth: NumberType) : NumberAt
   fun isAlive(): Boolean = this.value.isPositive()
   fun isDead(): Boolean = this.value.isZero()
 
-  @Suppress("Unchecked_cast")
+  @Suppress("UNCHECKED_CAST")
   fun damage(amount: NumberType) {
     if (amount.isNegative()) {
       throw IllegalArgumentException("Damage amount should be nonnegative: ${amount}")

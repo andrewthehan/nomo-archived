@@ -43,6 +43,6 @@ class TypedSet<T: Any> : MutableSet<T> {
 
   inline fun <reified Actual : T> get() = map.get(Actual::class) as? Actual
 
-  @Suppress("Unchecked_cast")
+  @Suppress("UNCHECKED_CAST")
   fun <Actual : T> get(tClass: KClass<Actual>) = map.get(tClass) as? Actual
 }
