@@ -1,5 +1,6 @@
 rootProject.name = 'nomo'
-include 'nomo-util'
+include 'nomo-boot'
 include 'nomo-core'
 include 'nomo-sdk'
+include 'nomo-util'
 include 'nomo-sample'

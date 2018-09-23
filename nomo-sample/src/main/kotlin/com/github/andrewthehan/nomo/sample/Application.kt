@@ -1,8 +1,10 @@
 package com.github.andrewthehan.nomo.sample
 
+import com.github.andrewthehan.nomo.boot.ecs.components.attributes.*
+import com.github.andrewthehan.nomo.boot.ecs.components.behaviors.*
+import com.github.andrewthehan.nomo.boot.ecs.events.*
 import com.github.andrewthehan.nomo.core.ecs.interfaces.*
 import com.github.andrewthehan.nomo.core.ecs.types.*
-import com.github.andrewthehan.nomo.core.ecs.*
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.*
 import com.github.andrewthehan.nomo.sdk.ecs.components.attributes.*
 import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.*
@@ -13,12 +15,29 @@ import com.github.andrewthehan.nomo.sdk.ecs.components.attributes.*
 import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.*
 import com.github.andrewthehan.nomo.sdk.ecs.events.*
 import com.github.andrewthehan.nomo.sdk.ecs.systems.*
+import com.github.andrewthehan.nomo.sdk.ecs.util.*
+import com.github.andrewthehan.nomo.util.collections.*
 import com.github.andrewthehan.nomo.util.*
+
+import kotlin.reflect.KClass
+
+class EcsEngine() : Engine {
+  override val managers = TypedSet<Manager>()
+  override val tasks = TypedSet<Task>()
+
+  override fun update(delta: Float) {
+    val taskClasses = tasks.map { it::class }
+    val orderedTaskClasses = getOrder(taskClasses)
+    orderedTaskClasses
+      .map { tasks.get(it)!! }
+      .forEach { it.update(delta) }
+  }
+}
 
 fun main(args: Array<String>) {
   println("Hello, world!")
 
-  val ecsEngine = EcsEngine().apply {
+  val engine = EcsEngine().apply {
     val ecs = this
     managers.apply {
       add(EntityComponentManager(ecs))
@@ -33,30 +52,30 @@ fun main(args: Array<String>) {
     }
   }
 
-  val systemsManager = ecsEngine.managers.get<SystemsManager>()!!
+  val systemsManager = engine.managers.get<SystemsManager>()!!
   systemsManager.systems.apply {
     add(UpdateSystem())
   }
 
-  (0..10).forEach {
-    createEntity(ecsEngine.managers.get<EntityComponentManager>()!!, "#${it}", 50, .1f)
+  (0..1000).forEach {
+    createEntity(engine.managers.get<EntityComponentManager>()!!, "#${it}", 50, .1f)
   }
 
-  (0..100000).forEach {
-    createEntity2(ecsEngine.managers.get<EntityComponentManager>()!!, "##${it}", 1000)
+  (0..1000).forEach {
+    createEntity2(engine.managers.get<EntityComponentManager>()!!, "##${it}", 1000)
   }
 
   // Simulate game loop
   var i = 0
   (0..100).forEach {
-  // while(ecsEngine.managers.get<EntityComponentManager>()!!.getAllEntities().any()) {
+  // while(engine.managers.get<EntityComponentManager>()!!.getAllEntities().any()) {
     println("******** LOOP ${++i} ********")
-    ecsEngine.update(10f)
+    engine.update(10f)
   }
 }
 
 val continuousDamageBehavior = ContinuousDamageBehavior()
-val deathBehavior = DeathBehavior()
+val removeOnDeathBehavior = RemoveOnDeathBehavior()
 
 fun createEntity(entityComponentManager: EntityComponentManager, entity: Entity, health: Int, armor: Float) {
   entity.apply {
@@ -64,7 +83,7 @@ fun createEntity(entityComponentManager: EntityComponentManager, entity: Entity,
     entityComponentManager.add(this, ArmorBehavior(armor))
     entityComponentManager.add(this, continuousDamageBehavior)
     entityComponentManager.add(this, DamageableBehavior())
-    entityComponentManager.add(this, deathBehavior)
+    entityComponentManager.add(this, removeOnDeathBehavior)
     // entityComponentManager.add(this, EventLogBehavior())
   }
 }
@@ -73,7 +92,7 @@ fun createEntity2(entityComponentManager: EntityComponentManager, entity: Entity
   entity.apply {
     entityComponentManager.add(this, HealthAttribute(health))
     entityComponentManager.add(this, DamageableBehavior())
-    entityComponentManager.add(this, deathBehavior)
+    entityComponentManager.add(this, removeOnDeathBehavior)
     // entityComponentManager.add(this, EventLogBehavior())
   }
 }
@@ -93,10 +112,6 @@ class EventLogBehavior : AbstractBehavior() {
   }
 }
 
-data class DamageEvent<NumberType: Number>(var amount: NumberType) : Event
-
-data class DeathEvent(val entity: Entity) : Event
-
 @Dependent(DamageableBehavior::class, HealthAttribute::class)
 class ContinuousDamageBehavior : AbstractBehavior() {
   @MutableInject
@@ -110,55 +125,5 @@ class ContinuousDamageBehavior : AbstractBehavior() {
     val entities = entityComponentManager.getEntities(this)
     entities.forEach { eventManager.dispatchEvent(DamageEvent(event.delta), it) }
     // eventManager.dispatchEvent(DamageEvent(event.delta), entities)
-  }
-}
-
-@Dependent(DamageableBehavior::class)
-class ArmorBehavior(val reduction: Float) : AbstractBehavior() {
-  @EventListener(DamageEvent::class)
-  @Befores(
-    Before(include = [ DamageableBehavior::class ])
-  )
-  fun applyArmor(event: DamageEvent<Int>) {
-    val before = event.amount
-    val after = (event.amount * reduction).toInt()
-    // println("Armor reduces damage: ${before} (${reduction}) -> ${after}")
-    event.amount = after
-  }
-}
-
-@Dependent(HealthAttribute::class)
-class DamageableBehavior : AbstractBehavior() {
-  @MutableInject
-  lateinit var eventManager: EventManager
-
-  @MutableInject
-  lateinit var entityComponentManager: EntityComponentManager
-
-  @EventListener(DamageEvent::class)
-  fun onDamage(event: DamageEvent<Int>) {
-    entityComponentManager
-      .getEntities(this)
-      .forEach {
-        val healthAttribute = entityComponentManager.getComponent<HealthAttribute<Int>>(it)
-        val before = healthAttribute.value
-        healthAttribute.damage(event.amount)
-        val after = healthAttribute.value
-        // println("${it} Health damaged: ${before} - ${event.amount} = ${after}")
-        if (healthAttribute.isDead()) {
-          eventManager.dispatchEvent(DeathEvent(it), it)
-        }
-      }
-  }
-}
-
-class DeathBehavior : AbstractBehavior() {
-  @MutableInject
-  lateinit var entityComponentManager: EntityComponentManager
-
-  @EventListener(DeathEvent::class)
-  fun onDeath(event: DeathEvent) {
-    // println("Death.")
-    entityComponentManager.remove(event.entity)
   }
 }

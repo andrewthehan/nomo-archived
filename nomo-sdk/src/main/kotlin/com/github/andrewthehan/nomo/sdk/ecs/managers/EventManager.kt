@@ -1,15 +1,15 @@
 package com.github.andrewthehan.nomo.sdk.ecs.managers
 
 import com.github.andrewthehan.nomo.core.ecs.types.Behavior
+import com.github.andrewthehan.nomo.core.ecs.types.Engine
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
 import com.github.andrewthehan.nomo.core.ecs.types.Event
 import com.github.andrewthehan.nomo.core.ecs.types.Manager
 import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
 import com.github.andrewthehan.nomo.sdk.ecs.util.EventDispatchInfo
-import com.github.andrewthehan.nomo.core.ecs.EcsEngine
 
-class EventManager(override val ecsEngine: EcsEngine) : Manager {
-  private val entityComponentManager by lazy { ecsEngine.managers.get<EntityComponentManager>()!! }
+class EventManager(override val engine: Engine) : Manager {
+  private val entityComponentManager by lazy { engine.managers.get<EntityComponentManager>()!! }
   
   val events = mutableSetOf<EventDispatchInfo>()
 

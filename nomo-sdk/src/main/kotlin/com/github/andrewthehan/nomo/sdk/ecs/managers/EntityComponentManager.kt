@@ -1,9 +1,9 @@
 package com.github.andrewthehan.nomo.sdk.ecs.managers
 
 import com.github.andrewthehan.nomo.core.ecs.types.Component
+import com.github.andrewthehan.nomo.core.ecs.types.Engine
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
 import com.github.andrewthehan.nomo.core.ecs.types.Manager
-import com.github.andrewthehan.nomo.core.ecs.EcsEngine
 import com.github.andrewthehan.nomo.sdk.ecs.exceptions.ExclusiveException
 import com.github.andrewthehan.nomo.sdk.ecs.exceptions.PendantException
 import com.github.andrewthehan.nomo.sdk.ecs.interfaces.Exclusive
@@ -13,7 +13,7 @@ import com.github.andrewthehan.nomo.util.filterAs
 import com.github.andrewthehan.nomo.util.singleAs
 import com.github.andrewthehan.nomo.util.hasAnnotation
 
-class EntityComponentManager(override val ecsEngine: EcsEngine) : Manager {
+class EntityComponentManager(override val engine: Engine) : Manager {
   val entitiesToComponentsMap = BiMultiMap<Entity, Component>()
 
   inline fun <reified ActualComponent: Component> add(entity: Entity, component: ActualComponent) {

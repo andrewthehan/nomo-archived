@@ -1,5 +1,6 @@
 
 dependencies {
   compile project(':nomo-core')
+  compile project(':nomo-sdk')
   compile project(':nomo-util')
 }
