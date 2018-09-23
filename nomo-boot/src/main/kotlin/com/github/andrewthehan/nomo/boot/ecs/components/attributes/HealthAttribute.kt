@@ -10,9 +10,11 @@ class HealthAttribute<NumberType : Number>(initialHealth: NumberType) : NumberAt
 
   @Suppress("UNCHECKED_CAST")
   fun damage(amount: NumberType) {
-    if (amount.isNegative()) {
-      throw IllegalArgumentException("Damage amount should be nonnegative: ${amount}")
+    if (amount.isZero()) {
+      return
     }
+
+    require(amount.isPositive()) { "Damage amount should be nonnegative: ${amount}" }
 
     this.value -= amount
 
@@ -22,9 +24,11 @@ class HealthAttribute<NumberType : Number>(initialHealth: NumberType) : NumberAt
   }
 
   fun heal(amount: NumberType) {
-    if (amount.isNegative()) {
-      throw IllegalArgumentException("Heal amount should be nonnegative: ${amount}")
+    if (amount.isZero()) {
+      return
     }
+
+    require(amount.isPositive()) { "Heal amount should be nonnegative: ${amount}" }
 
     this.value += amount
   }

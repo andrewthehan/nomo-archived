@@ -11,7 +11,7 @@ operator fun <NumberType: Number> NumberType.plus(other: NumberType): NumberType
     is Byte -> (this.toByte() + other.toByte()) as NumberType
     is Double -> (this.toDouble() + other.toDouble()) as NumberType
     is Float -> (this.toFloat() + other.toFloat()) as NumberType
-    else -> throw RuntimeException("Unknown numeric type")
+    else -> throw AssertionError("Unknown numeric type")
   }
 }
 
@@ -24,7 +24,7 @@ operator fun <NumberType: Number> NumberType.minus(other: NumberType): NumberTyp
     is Byte -> (this.toByte() - other.toByte()) as NumberType
     is Double -> (this.toDouble() - other.toDouble()) as NumberType
     is Float -> (this.toFloat() - other.toFloat()) as NumberType
-    else -> throw RuntimeException("Unknown numeric type")
+    else -> throw AssertionError("Unknown numeric type")
   }
 }
 
@@ -37,7 +37,7 @@ operator fun <NumberType: Number> NumberType.times(other: NumberType): NumberTyp
     is Byte -> (this.toByte() * other.toByte()) as NumberType
     is Double -> (this.toDouble() * other.toDouble()) as NumberType
     is Float -> (this.toFloat() * other.toFloat()) as NumberType
-    else -> throw RuntimeException("Unknown numeric type")
+    else -> throw AssertionError("Unknown numeric type")
   }
 }
 
@@ -50,7 +50,7 @@ operator fun <NumberType: Number> NumberType.div(other: NumberType): NumberType 
     is Byte -> (this.toByte() / other.toByte()) as NumberType
     is Double -> (this.toDouble() / other.toDouble()) as NumberType
     is Float -> (this.toFloat() / other.toFloat()) as NumberType
-    else -> throw RuntimeException("Unknown numeric type")
+    else -> throw AssertionError("Unknown numeric type")
   }
 }
 
@@ -62,7 +62,7 @@ operator fun <NumberType: Number> NumberType.compareTo(other: NumberType): Int {
     is Byte -> this.toByte().compareTo(other.toByte())
     is Double -> this.toDouble().compareTo(other.toDouble())
     is Float -> this.toFloat().compareTo(other.toFloat())
-    else -> throw RuntimeException("Unknown numeric type")
+    else -> throw AssertionError("Unknown numeric type")
   }
 }
 
