@@ -14,9 +14,11 @@ subprojects {
     compile "org.jetbrains.kotlin:kotlin-reflect"
     testCompile "org.jetbrains.kotlin:kotlin-test-junit"
   }
+
   repositories {
     mavenCentral()
   }
+
   compileKotlin {
     kotlinOptions {
       jvmTarget = "1.8"

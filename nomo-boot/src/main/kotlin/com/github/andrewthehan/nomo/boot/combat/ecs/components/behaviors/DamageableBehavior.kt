@@ -1,8 +1,8 @@
-package com.github.andrewthehan.nomo.boot.ecs.components.behaviors
+package com.github.andrewthehan.nomo.boot.combat.ecs.components.behaviors
 
-import com.github.andrewthehan.nomo.boot.ecs.components.attributes.HealthAttribute
-import com.github.andrewthehan.nomo.boot.ecs.events.DamageEvent
-import com.github.andrewthehan.nomo.boot.ecs.events.DeathEvent
+import com.github.andrewthehan.nomo.boot.combat.ecs.components.attributes.HealthAttribute
+import com.github.andrewthehan.nomo.boot.combat.ecs.events.DamageEvent
+import com.github.andrewthehan.nomo.boot.combat.ecs.events.DeathEvent
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.Dependent
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.EventListener
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.MutableInject

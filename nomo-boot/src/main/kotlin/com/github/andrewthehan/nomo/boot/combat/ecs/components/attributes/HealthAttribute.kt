@@ -1,4 +1,4 @@
-package com.github.andrewthehan.nomo.boot.ecs.components.attributes
+package com.github.andrewthehan.nomo.boot.combat.ecs.components.attributes
 
 import com.github.andrewthehan.nomo.sdk.ecs.components.attributes.NumberAttribute
 import com.github.andrewthehan.nomo.sdk.ecs.interfaces.Exclusive

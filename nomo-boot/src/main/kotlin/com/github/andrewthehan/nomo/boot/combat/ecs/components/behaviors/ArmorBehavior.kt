@@ -1,6 +1,6 @@
-package com.github.andrewthehan.nomo.boot.ecs.components.behaviors
+package com.github.andrewthehan.nomo.boot.combat.ecs.components.behaviors
 
-import com.github.andrewthehan.nomo.boot.ecs.events.DamageEvent
+import com.github.andrewthehan.nomo.boot.combat.ecs.events.DamageEvent
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.Before
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.Befores
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.Dependent

@@ -1,7 +1,5 @@
 package com.github.andrewthehan.nomo.util
 
-import kotlin.comparisons.maxOf as kotlinMaxOf
-
 @Suppress("UNCHECKED_CAST")
 operator fun <NumberType: Number> NumberType.plus(other: NumberType): NumberType {
   return when (this) {

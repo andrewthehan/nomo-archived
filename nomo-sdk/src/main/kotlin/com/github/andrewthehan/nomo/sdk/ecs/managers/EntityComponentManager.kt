@@ -60,7 +60,6 @@ class EntityComponentManager(override val engine: Engine) : Manager {
   
   fun <PendantComponent> getEntity(component: PendantComponent) where PendantComponent : Component, PendantComponent : Pendant =
     entitiesToComponentsMap.reverse[component].singleOrNull()
-    
 
   fun getEntities(component: Component) = entitiesToComponentsMap.reverse[component].toSet()
 
@@ -73,4 +72,7 @@ class EntityComponentManager(override val engine: Engine) : Manager {
 
   inline fun <reified ActualComponent: Component> getComponents(entity: Entity)
     = entitiesToComponentsMap[entity].filterAs<ActualComponent>()
+
+  inline fun <reified ActualComponent: Component> getComponents()
+    = entitiesToComponentsMap.values.filterAs<ActualComponent>()
 }

@@ -3,9 +3,20 @@ apply plugin: 'application'
 
 mainClassName = 'com.github.andrewthehan.nomo.sample.ApplicationKt'
 
+ext {
+  gdxVersion = '1.9.8'
+  ktxVersion = "$gdxVersion-b5"
+}
+
 dependencies {
   compile project(':nomo-boot')
   compile project(':nomo-core')
   compile project(':nomo-sdk')
   compile project(':nomo-util')
+
+  compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+  compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+  compile "io.github.libktx:ktx-app:$ktxVersion"
+  compile "io.github.libktx:ktx-graphics:$ktxVersion"
+  compile "io.github.libktx:ktx-math:$ktxVersion"
 }

@@ -1,25 +1,27 @@
 package com.github.andrewthehan.nomo.sample
 
-import com.github.andrewthehan.nomo.boot.ecs.components.attributes.*
-import com.github.andrewthehan.nomo.boot.ecs.components.behaviors.*
-import com.github.andrewthehan.nomo.boot.ecs.events.*
-import com.github.andrewthehan.nomo.core.ecs.interfaces.*
 import com.github.andrewthehan.nomo.core.ecs.types.*
-import com.github.andrewthehan.nomo.sdk.ecs.annotations.*
-import com.github.andrewthehan.nomo.sdk.ecs.components.attributes.*
-import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.*
-import com.github.andrewthehan.nomo.sdk.ecs.interfaces.*
+import com.github.andrewthehan.nomo.sample.ecs.entities.*
+import com.github.andrewthehan.nomo.sample.ecs.systems.*
 import com.github.andrewthehan.nomo.sdk.ecs.managers.*
 import com.github.andrewthehan.nomo.sdk.ecs.tasks.*
-import com.github.andrewthehan.nomo.sdk.ecs.components.attributes.*
-import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.*
-import com.github.andrewthehan.nomo.sdk.ecs.events.*
-import com.github.andrewthehan.nomo.sdk.ecs.systems.*
+import com.github.andrewthehan.nomo.sdk.ecs.systems.UpdateSystem
 import com.github.andrewthehan.nomo.sdk.ecs.util.*
 import com.github.andrewthehan.nomo.util.collections.*
-import com.github.andrewthehan.nomo.util.*
 
-import kotlin.reflect.KClass
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.Gdx
+
+import ktx.app.KtxApplicationAdapter
+
+import com.badlogic.gdx.graphics.Texture;
+import com.github.andrewthehan.nomo.sample.ecs.components.attributes.*
+import com.github.andrewthehan.nomo.sample.ecs.components.behaviors.*
+import com.github.andrewthehan.nomo.sdk.ecs.events.*
+import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.*
+import com.github.andrewthehan.nomo.sdk.ecs.annotations.*
 
 class EcsEngine() : Engine {
   override val managers = TypedSet<Manager>()
@@ -34,98 +36,56 @@ class EcsEngine() : Engine {
   }
 }
 
-fun main(args: Array<String>) {
-  println("Hello, world!")
-
-  val engine = EcsEngine().apply {
-    val ecs = this
-    managers.apply {
-      add(EntityComponentManager(ecs))
-      add(EventManager(ecs))
-      add(SystemsManager(ecs))
-    }
-    tasks.apply {
-      add(InjectionTask(ecs))
-      add(SystemsUpdateTask(ecs))
-      add(DependencyValidatorTask(ecs))
-      add(EventPropagationTask(ecs))
-    }
-  }
-
-  val systemsManager = engine.managers.get<SystemsManager>()!!
-  systemsManager.systems.apply {
-    add(UpdateSystem())
-  }
-
-  (0..1000).forEach {
-    createEntity(engine.managers.get<EntityComponentManager>()!!, "#${it}", 50, .1f)
-  }
-
-  (0..1000).forEach {
-    createEntity2(engine.managers.get<EntityComponentManager>()!!, "##${it}", 1000)
-  }
-
-  // Simulate game loop
+class Application : KtxApplicationAdapter {
+  lateinit var engine: Engine
   var i = 0
-  (0..100).forEach {
-  // while(engine.managers.get<EntityComponentManager>()!!.getAllEntities().any()) {
+
+  override fun create() {
+    engine = EcsEngine().apply {
+      val ecs = this
+      managers.apply {
+        add(EntityComponentManager(ecs))
+        add(EventManager(ecs))
+        add(SystemsManager(ecs))
+      }
+      tasks.apply {
+        add(InjectionTask(ecs))
+        add(SystemsUpdateTask(ecs))
+        add(DependencyValidatorTask(ecs))
+        add(EventPropagationTask(ecs))
+      }
+    }
+
+    val systemsManager = engine.managers.get<SystemsManager>()!!
+    systemsManager.systems.apply {
+      add(UpdateSystem())
+      add(RenderSystem())
+      add(PhysicsStepSystem())
+    }
+
+    create(engine, 3f, 15f)
+    
+    val components = arrayOf(
+      PositionAttribute(100f, 100f),
+      VelocityAttribute(10f, 100f),
+      AccelerationAttribute(100f, -50f),
+      ImageRenderBehavior(Texture(Gdx.files.internal("image.png")))
+    )
+    engine.managers.get<EntityComponentManager>()!!.add("face", components)
+  }
+
+  override fun render() {
     println("******** LOOP ${++i} ********")
-    engine.update(10f)
+    engine.update(Gdx.graphics.getDeltaTime())
   }
 }
 
-val continuousDamageBehavior = ContinuousDamageBehavior()
-val removeOnDeathBehavior = RemoveOnDeathBehavior()
-
-fun createEntity(entityComponentManager: EntityComponentManager, entity: Entity, health: Int, armor: Float) {
-  val components = arrayOf(
-    HealthAttribute(health),
-    ArmorBehavior(armor),
-    continuousDamageBehavior,
-    DamageableBehavior(),
-    removeOnDeathBehavior
-    // EventLogBehavior()
-  )
-  entityComponentManager.add(entity, components)
-}
-
-fun createEntity2(entityComponentManager: EntityComponentManager, entity: Entity, health: Int) {
-  val components = arrayOf(
-    HealthAttribute(health),
-    DamageableBehavior(),
-    removeOnDeathBehavior
-    // EventLogBehavior()
-  )
-  entityComponentManager.add(entity, components)
-}
-
-@Befores(
-  Before(include = [ Component::class ], exclude = [ EventLogBehavior::class ])
-)
-class EventLogBehavior : AbstractBehavior() {
-  @MutableInject
-  lateinit var entityComponentManager: EntityComponentManager
-
-  @EventListener
-  fun log(event: Event) {
-    entityComponentManager
-      .getEntities(this)
-      .forEach { println("Entity (${it}) receives ${event}") }
+fun main(args: Array<String>) {
+  val config = LwjglApplicationConfiguration()
+  with (config) {
+    title = "nomo"
+    width = 1366
+    height = 768
   }
-}
-
-@Dependent(DamageableBehavior::class, HealthAttribute::class)
-class ContinuousDamageBehavior : AbstractBehavior() {
-  @MutableInject
-  lateinit var eventManager: EventManager
-
-  @MutableInject
-  lateinit var entityComponentManager: EntityComponentManager
-
-  @EventListener
-  fun drainHealth(event: UpdateEvent) {
-    val entities = entityComponentManager.getEntities(this)
-    entities.forEach { eventManager.dispatchEvent(DamageEvent(event.delta), it) }
-    // eventManager.dispatchEvent(DamageEvent(event.delta), entities)
-  }
+  LwjglApplication(Application(), config)
 }

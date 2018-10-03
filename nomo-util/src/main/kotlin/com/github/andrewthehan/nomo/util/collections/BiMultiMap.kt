@@ -16,18 +16,18 @@ open class BiMultiMap<K, V> : Cloneable {
     values = reverseMap.keys
   }
 
-  override public fun clone(): Any {
-    val clone = BiMultiMap<K, V>()
-    forwardMap.entries.forEach { (key, value) -> value.forEach { clone.put(key, it) } }
-    return clone
-  }
-
   private constructor(forwardMap: MultiMap<K, V>, reverseMap: MultiMap<V, K>, reverse: BiMultiMap<V, K>) {
     this.forwardMap = forwardMap
     this.reverseMap = reverseMap
     this.reverse = reverse
     keys = forwardMap.keys
     values = reverseMap.keys
+  }
+
+  override public fun clone(): Any {
+    val clone = BiMultiMap<K, V>()
+    forwardMap.entries.forEach { (key, value) -> value.forEach { clone.put(key, it) } }
+    return clone
   }
 
   operator fun get(key: K) = forwardMap[key]
