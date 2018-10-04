@@ -1,8 +1,8 @@
 package com.github.andrewthehan.nomo.sample.ecs.entities
 
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
 import com.github.andrewthehan.nomo.core.ecs.types.Engine
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
-import com.github.andrewthehan.nomo.sample.ecs.components.attributes.PositionAttribute
 import com.github.andrewthehan.nomo.sample.ecs.components.behaviors.TextRenderBehavior
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.EventListener
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.MutableInject
@@ -33,7 +33,7 @@ val textUpdateBehavior = object : PeriodicBehavior(1f) {
 
 fun create(engine: Engine, x: Float, y: Float, entity: Entity = randomId()): Entity {
   val components = arrayOf(
-    PositionAttribute(x, y),
+    Position2dAttribute(x, y),
     TextRenderBehavior(),
     textUpdateBehavior
   )

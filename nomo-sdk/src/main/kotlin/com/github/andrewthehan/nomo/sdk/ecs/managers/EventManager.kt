@@ -17,12 +17,12 @@ class EventManager(override val engine: Engine) : Manager {
 
   fun dispatchEvent(event: Event, behavior: Behavior) = events.add(EventDispatchInfo(event, setOf(behavior)))
 
-  fun dispatchEvent(event: Event, behaviors: Collection<Behavior>) = events.add(EventDispatchInfo(event, behaviors))
+  fun dispatchEvent(event: Event, behaviors: Iterable<Behavior>?) = events.add(EventDispatchInfo(event, behaviors))
 
   fun dispatchEvent(event: Event, entity: Entity)
     = events.add(EventDispatchInfo(event, entityComponentManager.getComponents<Behavior>(entity).toSet()))
 
-  fun dispatchEvent(event: Event, entities: Collection<Entity>) {
+  fun dispatchEvent(event: Event, entities: Iterable<Entity>) {
     val behaviors = entities
       .flatMap { entityComponentManager.getComponents<Behavior>(it) }
       .distinct()

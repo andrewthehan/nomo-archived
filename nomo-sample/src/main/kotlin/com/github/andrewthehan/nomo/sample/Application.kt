@@ -1,5 +1,7 @@
 package com.github.andrewthehan.nomo.sample
 
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.*
+import com.github.andrewthehan.nomo.boot.physics.ecs.systems.*
 import com.github.andrewthehan.nomo.core.ecs.types.*
 import com.github.andrewthehan.nomo.sample.ecs.entities.*
 import com.github.andrewthehan.nomo.sample.ecs.systems.*
@@ -8,6 +10,7 @@ import com.github.andrewthehan.nomo.sdk.ecs.tasks.*
 import com.github.andrewthehan.nomo.sdk.ecs.systems.UpdateSystem
 import com.github.andrewthehan.nomo.sdk.ecs.util.*
 import com.github.andrewthehan.nomo.util.collections.*
+import com.github.andrewthehan.nomo.util.math.*
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
@@ -17,11 +20,13 @@ import com.badlogic.gdx.Gdx
 import ktx.app.KtxApplicationAdapter
 
 import com.badlogic.gdx.graphics.Texture;
-import com.github.andrewthehan.nomo.sample.ecs.components.attributes.*
+// import com.github.andrewthehan.nomo.sample.ecs.components.attributes.*
 import com.github.andrewthehan.nomo.sample.ecs.components.behaviors.*
 import com.github.andrewthehan.nomo.sdk.ecs.events.*
 import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.*
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.*
+
+import kotlin.system.exitProcess
 
 class EcsEngine() : Engine {
   override val managers = TypedSet<Manager>()
@@ -66,15 +71,22 @@ class Application : KtxApplicationAdapter {
     create(engine, 3f, 15f)
     
     val components = arrayOf(
-      PositionAttribute(100f, 100f),
-      VelocityAttribute(10f, 100f),
-      AccelerationAttribute(100f, -50f),
+      Position2dAttribute(100f, 100f),
+      Velocity2dAttribute(500f, 1000f),
+      Acceleration2dAttribute(0f, -982f),
       ImageRenderBehavior(Texture(Gdx.files.internal("image.png")))
     )
     engine.managers.get<EntityComponentManager>()!!.add("face", components)
   }
 
   override fun render() {
+    val entityComponentManager = engine.managers.get<EntityComponentManager>()!!
+    val velocity = entityComponentManager.getComponents<Velocity2dAttribute>().single()
+    val entity = entityComponentManager.getEntities(velocity).single()
+    val position = entityComponentManager.getComponent<Position2dAttribute>(entity)
+    if (position.y < 0f) {
+      Gdx.app.exit()
+    }
     println("******** LOOP ${++i} ********")
     engine.update(Gdx.graphics.getDeltaTime())
   }

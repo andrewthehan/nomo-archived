@@ -1,35 +1,33 @@
 package com.github.andrewthehan.nomo.boot.combat.ecs.components.attributes
 
-import com.github.andrewthehan.nomo.sdk.ecs.components.attributes.NumberAttribute
+import com.github.andrewthehan.nomo.boot.util.ecs.components.attributes.MutableVector1fAttribute
 import com.github.andrewthehan.nomo.sdk.ecs.interfaces.Exclusive
-import com.github.andrewthehan.nomo.util.*
 
-class HealthAttribute<NumberType : Number>(initialHealth: NumberType) : NumberAttribute<NumberType>(initialHealth), Exclusive {
-  fun isAlive(): Boolean = this.value.isPositive()
-  fun isDead(): Boolean = this.value.isZero()
+class HealthAttribute(initialHealth: Float) : MutableVector1fAttribute(initialHealth), Exclusive {
+  fun isAlive(): Boolean = x > 0f
+  fun isDead(): Boolean = x == 0f
 
-  @Suppress("UNCHECKED_CAST")
-  fun damage(amount: NumberType) {
-    if (amount.isZero()) {
+  fun damage(amount: Float) {
+    if (amount == 0f) {
       return
     }
 
-    require(amount.isPositive()) { "Damage amount should be nonnegative: ${amount}" }
+    require(amount >= 0f) { "Damage amount should be nonnegative: ${amount}" }
 
-    this.value -= amount
+    x -= amount
 
-    if (this.value.isNegative()) {
-      this.value = 0 as NumberType
+    if (x < 0f) {
+      x = 0f
     }
   }
 
-  fun heal(amount: NumberType) {
-    if (amount.isZero()) {
+  fun heal(amount: Float) {
+    if (amount == 0f) {
       return
     }
 
-    require(amount.isPositive()) { "Heal amount should be nonnegative: ${amount}" }
+    require(amount >= 0f) { "Heal amount should be nonnegative: ${amount}" }
 
-    this.value += amount
+    x += amount
   }
 }

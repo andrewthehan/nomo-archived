@@ -58,8 +58,8 @@ class EntityComponentManager(override val engine: Engine) : Manager {
 
   fun getAllEntities() = entitiesToComponentsMap.keys.toSet()
   
-  fun <PendantComponent> getEntity(component: PendantComponent) where PendantComponent : Component, PendantComponent : Pendant =
-    entitiesToComponentsMap.reverse[component].singleOrNull()
+  fun <PendantComponent> getEntity(component: PendantComponent) where PendantComponent : Component, PendantComponent : Pendant
+    = entitiesToComponentsMap.reverse[component].singleOrNull()
 
   fun getEntities(component: Component) = entitiesToComponentsMap.reverse[component].toSet()
 

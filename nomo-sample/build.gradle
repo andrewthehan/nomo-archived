@@ -18,5 +18,4 @@ dependencies {
   compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
   compile "io.github.libktx:ktx-app:$ktxVersion"
   compile "io.github.libktx:ktx-graphics:$ktxVersion"
-  compile "io.github.libktx:ktx-math:$ktxVersion"
 }
