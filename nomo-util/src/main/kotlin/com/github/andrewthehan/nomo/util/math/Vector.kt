@@ -18,7 +18,7 @@ open class Vector<NumberType : Number>(val dimensions: Int, init: (Int) -> Numbe
   operator fun unaryMinus() = Vector(dimensions) { -this[it] }
 
   private fun binaryOperation(vector: Vector<NumberType>, operation: (NumberType, NumberType) -> NumberType): Vector<NumberType> {
-    require(dimensions == vector.dimensions) { "Dot product only applies to two vectors of equal dimensions: ${dimensions} != ${vector.dimensions} "}
+    require(dimensions == vector.dimensions) { "Arithmetic operations on two vectors requires vectors of equal dimensions: ${dimensions} != ${vector.dimensions} "}
     return Vector(dimensions) { operation(
       components[it],
       vector.components[it]

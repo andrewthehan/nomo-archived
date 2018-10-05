@@ -12,7 +12,7 @@ open class MutableVector<NumberType : Number>(dimensions: Int, init: (Int) -> Nu
   constructor(vararg elements: NumberType) : this(elements.size, { elements[it] })
 
   private fun mutableBinaryOperation(vector: Vector<NumberType>, operation: (NumberType, NumberType) -> NumberType) {
-    require(dimensions == vector.dimensions) { "Dot product only applies to two vectors of equal dimensions: ${dimensions} != ${vector.dimensions} "}
+    require(dimensions == vector.dimensions) { "Arithmetic operations on two vectors requires vectors of equal dimensions: ${dimensions} != ${vector.dimensions} "}
     (0 until dimensions).forEach {
       components[it] = operation(components[it], vector.components[it])
     }
