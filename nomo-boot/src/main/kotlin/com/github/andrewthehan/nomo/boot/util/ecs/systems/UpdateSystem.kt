@@ -1,8 +1,9 @@
-package com.github.andrewthehan.nomo.sdk.ecs.systems
+package com.github.andrewthehan.nomo.boot.util.ecs.systems
 
+import com.github.andrewthehan.nomo.boot.util.ecs.events.UpdateEvent
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.MutableInject
 import com.github.andrewthehan.nomo.sdk.ecs.managers.EventManager
-import com.github.andrewthehan.nomo.sdk.ecs.events.UpdateEvent
+import com.github.andrewthehan.nomo.sdk.ecs.systems.AbstractSystem
 
 class UpdateSystem : AbstractSystem() {
   @MutableInject

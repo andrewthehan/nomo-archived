@@ -2,12 +2,15 @@ package com.github.andrewthehan.nomo.sample
 
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.*
 import com.github.andrewthehan.nomo.boot.physics.ecs.systems.*
+import com.github.andrewthehan.nomo.boot.io.ecs.events.*
+import com.github.andrewthehan.nomo.boot.io.*
+import com.github.andrewthehan.nomo.boot.util.ecs.events.*
+import com.github.andrewthehan.nomo.boot.util.ecs.systems.*
 import com.github.andrewthehan.nomo.core.ecs.types.*
 import com.github.andrewthehan.nomo.sample.ecs.entities.*
 import com.github.andrewthehan.nomo.sample.ecs.systems.*
 import com.github.andrewthehan.nomo.sdk.ecs.managers.*
 import com.github.andrewthehan.nomo.sdk.ecs.tasks.*
-import com.github.andrewthehan.nomo.sdk.ecs.systems.UpdateSystem
 import com.github.andrewthehan.nomo.sdk.ecs.util.*
 import com.github.andrewthehan.nomo.util.collections.*
 import com.github.andrewthehan.nomo.util.math.*
@@ -26,7 +29,7 @@ import com.github.andrewthehan.nomo.sdk.ecs.events.*
 import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.*
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.*
 
-import kotlin.system.exitProcess
+import kotlin.math.*
 
 class EcsEngine() : Engine {
   override val managers = TypedSet<Manager>()
@@ -66,15 +69,86 @@ class Application : KtxApplicationAdapter {
       add(UpdateSystem())
       add(RenderSystem())
       add(PhysicsStepSystem())
+      add(KeyIoSystem())
     }
 
     create(engine, 3f, 15f)
     
     val components = arrayOf(
       Position2dAttribute(100f, 100f),
-      Velocity2dAttribute(500f, 1000f),
-      Acceleration2dAttribute(0f, -982f),
-      ImageRenderBehavior(Texture(Gdx.files.internal("image.png")))
+      Velocity2dAttribute(),
+      Acceleration2dAttribute(),
+      ImageRenderBehavior(Texture(Gdx.files.internal("image.png"))),
+      object : AbstractBehavior() {
+        @MutableInject
+        lateinit var entityComponentManager: EntityComponentManager
+
+        private val deacceleration = -1000f
+
+        @EventListener
+        fun slowDown(event: UpdateEvent) {
+          val entities = entityComponentManager.getEntities(this)
+          entities
+            .map { entityComponentManager.getComponent<Velocity2dAttribute>(it) }
+            .filter { !it.isZero() }
+            .forEach {
+              val delta = Vector2f(sign(it.x), sign(it.y)) * deacceleration * event.delta
+              it.x =
+                if (abs(it.x) < abs(delta.x)) { 0f }
+                else { it.x + delta.x }
+              it.y =
+                if (abs(it.y) < abs(delta.y)) { 0f }
+                else { it.y + delta.y }
+            }
+        }
+      },
+      object : AbstractBehavior() {
+        @MutableInject
+        lateinit var entityComponentManager: EntityComponentManager
+
+        private val relevantKeys = setOf(Key.W, Key.A, Key.S, Key.D)
+        private val speed = 1500f
+
+        @EventListener
+        fun move(event: KeyPressedEvent) {
+          if (!relevantKeys.contains(event.key)) {
+            return
+          }
+          
+          val entities = entityComponentManager.getEntities(this)
+          entities
+            .map { entityComponentManager.getComponent<Acceleration2dAttribute>(it) }
+            .forEach {
+              when(event.key) {
+                Key.D -> it.x += speed
+                Key.A -> it.x -= speed
+                Key.W -> it.y += speed
+                Key.S -> it.y -= speed
+                else -> throw AssertionError()
+              }
+            }
+        }
+
+        @EventListener
+        fun move(event: KeyReleasedEvent) {
+          if (!relevantKeys.contains(event.key)) {
+            return
+          }
+          
+          val entities = entityComponentManager.getEntities(this)
+          entities
+            .map { entityComponentManager.getComponent<Acceleration2dAttribute>(it) }
+            .forEach {
+              when(event.key) {
+                Key.D -> it.x -= speed
+                Key.A -> it.x += speed
+                Key.W -> it.y -= speed
+                Key.S -> it.y += speed
+                else -> throw AssertionError()
+              }
+            }
+        }
+      }
     )
     engine.managers.get<EntityComponentManager>()!!.add("face", components)
   }
