@@ -12,8 +12,6 @@ import com.github.andrewthehan.nomo.util.randomId
 
 import com.badlogic.gdx.Gdx
 
-import ktx.graphics.*
-
 val textUpdateBehavior = object : PeriodicBehavior(1f) {
   @MutableInject
   lateinit var entityComponentManager: EntityComponentManager

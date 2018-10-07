@@ -1,9 +1,9 @@
 package com.github.andrewthehan.nomo.sample.ecs.systems
 
 import com.github.andrewthehan.nomo.boot.io.Key
-import com.github.andrewthehan.nomo.boot.io.ecs.events.KeyHeldEvent
-import com.github.andrewthehan.nomo.boot.io.ecs.events.KeyPressedEvent
-import com.github.andrewthehan.nomo.boot.io.ecs.events.KeyReleasedEvent
+import com.github.andrewthehan.nomo.boot.io.ecs.events.KeyHoldEvent
+import com.github.andrewthehan.nomo.boot.io.ecs.events.KeyPressEvent
+import com.github.andrewthehan.nomo.boot.io.ecs.events.KeyReleaseEvent
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.MutableInject
 import com.github.andrewthehan.nomo.sdk.ecs.managers.EventManager
 import com.github.andrewthehan.nomo.sdk.ecs.systems.AbstractSystem
@@ -61,14 +61,14 @@ class KeyIoSystem : AbstractSystem {
     Gdx.input.setInputProcessor(object : InputAdapter() {
       override fun keyDown(keyCode: Int): Boolean {
         val key = toKey(keyCode)
-        eventManager.dispatchEvent(KeyPressedEvent(key, source))
+        eventManager.dispatchEvent(KeyPressEvent(key, source))
         heldKeys.add(key)
         return true
       }
 
       override fun keyUp(keyCode: Int): Boolean {
         val key = toKey(keyCode)
-        eventManager.dispatchEvent(KeyReleasedEvent(key, source))
+        eventManager.dispatchEvent(KeyReleaseEvent(key, source))
         heldKeys.remove(key)
         return true
       }
@@ -77,7 +77,7 @@ class KeyIoSystem : AbstractSystem {
 
   override fun update(delta: Float) {
     heldKeys.forEach {
-      eventManager.dispatchEvent(KeyHeldEvent(it, source))
+      eventManager.dispatchEvent(KeyHoldEvent(it, source))
     }
   }
 }
