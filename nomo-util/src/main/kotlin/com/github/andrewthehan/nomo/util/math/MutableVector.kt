@@ -26,6 +26,13 @@ open class MutableVector<NumberType : Number>(dimensions: Int, init: (Int) -> Nu
 
   open override operator fun div(scalar: NumberType) = map { it / scalar }
 
+  fun set(vector: Vector<NumberType>) {
+    require(dimensions == vector.dimensions) { "Vector dimensions should match: ${dimensions} != ${vector.dimensions}" }
+    (0 until dimensions).forEach {
+      components[it] = vector.components[it]
+    }
+  }
+
   operator fun set(i: Int, value: NumberType) {
     components[i] = value
   }

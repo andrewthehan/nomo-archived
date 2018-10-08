@@ -46,7 +46,7 @@ fun toKey(keyCode: Int): Key = when(keyCode) {
   Keys.ALT_RIGHT -> Key.ALT_RIGHT
   Keys.SHIFT_LEFT -> Key.SHIFT_LEFT
   Keys.SHIFT_RIGHT -> Key.SHIFT_RIGHT
-  else -> throw UnsupportedOperationException("Unsupported keyCode: ${keyCode}")
+  else -> throw UnsupportedOperationException("Unsupported keyCode: ${Keys.toString(keyCode)} (${keyCode})")
 }
 
 class KeyIoSystem : AbstractSystem {

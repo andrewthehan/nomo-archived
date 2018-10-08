@@ -20,14 +20,12 @@ class DamageableBehavior : AbstractBehavior() {
 
   @EventListener
   fun onDamage(event: DamageEvent) {
-    entityComponentManager
-      .getEntities(this)
-      .forEach {
-        val healthAttribute = entityComponentManager.getComponent<HealthAttribute>(it)
-        healthAttribute.damage(event.amount)
-        if (healthAttribute.isDead()) {
-          eventManager.dispatchEvent(DeathEvent(it), it)
-        }
+    entityComponentManager[this].forEach {
+      val healthAttribute = entityComponentManager.getComponent<HealthAttribute>(it)
+      healthAttribute.damage(event.amount)
+      if (healthAttribute.isDead()) {
+        eventManager.dispatchEvent(DeathEvent(it), it)
       }
+    }
   }
 }

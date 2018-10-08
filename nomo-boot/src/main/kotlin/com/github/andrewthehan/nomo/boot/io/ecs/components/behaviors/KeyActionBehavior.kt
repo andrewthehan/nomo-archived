@@ -19,7 +19,7 @@ abstract class KeyActionBehavior(val keyActionMap: Map<Key, (Iterable<Entity>) -
       return
     }
 
-    val entities = entityComponentManager.getEntities(this)
+    val entities = entityComponentManager[this]
     val action = keyActionMap.getValue(key)
 
     action(entities)

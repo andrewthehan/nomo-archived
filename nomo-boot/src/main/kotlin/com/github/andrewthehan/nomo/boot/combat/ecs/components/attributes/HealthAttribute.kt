@@ -1,6 +1,6 @@
 package com.github.andrewthehan.nomo.boot.combat.ecs.components.attributes
 
-import com.github.andrewthehan.nomo.boot.util.ecs.components.attributes.MutableVector1fAttribute
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.MutableVector1fAttribute
 import com.github.andrewthehan.nomo.sdk.ecs.interfaces.Exclusive
 
 class HealthAttribute(initialHealth: Float) : MutableVector1fAttribute(initialHealth), Exclusive {

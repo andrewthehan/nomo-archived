@@ -1,4 +1,4 @@
-package com.github.andrewthehan.nomo.boot.util.ecs.components.attributes
+package com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes
 
 import com.github.andrewthehan.nomo.core.ecs.types.Attribute
 import com.github.andrewthehan.nomo.util.math.Vector1f

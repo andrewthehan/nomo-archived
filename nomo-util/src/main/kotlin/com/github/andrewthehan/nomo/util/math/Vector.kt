@@ -25,9 +25,9 @@ open class Vector<NumberType : Number>(val dimensions: Int, init: (Int) -> Numbe
     ) }
   }
 
-  operator fun plus(vector: Vector<NumberType>) = binaryOperation(vector, { a, b -> a + b })
+  open operator fun plus(vector: Vector<NumberType>) = binaryOperation(vector, { a, b -> a + b })
 
-  operator fun minus(vector: Vector<NumberType>) = binaryOperation(vector, { a, b -> a - b })
+  open operator fun minus(vector: Vector<NumberType>) = binaryOperation(vector, { a, b -> a - b })
 
   open operator fun times(scalar: NumberType) = map { it * scalar }
 
@@ -62,6 +62,14 @@ open class Vector<NumberType : Number>(val dimensions: Int, init: (Int) -> Numbe
 
   open fun <R : Number> map(transform: (NumberType) -> R)
     = Vector(dimensions) { transform(components[it]) }
+
+  infix fun equals(other: Vector<*>): Boolean {
+    if (this === other) return true
+
+    if (components != other.components) return false
+
+    return true
+  }
 
   override fun toString() = "<" + components.joinToString() + ">"
 }

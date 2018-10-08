@@ -9,8 +9,6 @@ import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 
-import ktx.graphics.*
-
 @Dependent(Position2dAttribute::class)
 class TextRenderBehavior(var text: String = "") : RenderBehavior() {
   @MutableInject
@@ -21,12 +19,12 @@ class TextRenderBehavior(var text: String = "") : RenderBehavior() {
   @EventListener
   override fun render(event: RenderEvent) {
     val batch = event.batch
-    val entities = entityComponentManager.getEntities(this)
-    batch.use {
-      entities.forEach {
-        val position = entityComponentManager.getComponent<Position2dAttribute>(it)
-        font.draw(batch, text, position.x, position.y)
-      }
+    val entities = entityComponentManager[this]
+    batch.begin()
+    entities.forEach {
+      val position = entityComponentManager.getComponent<Position2dAttribute>(it)
+      font.draw(batch, text, position.x, position.y)
     }
+    batch.end()
   }
 }

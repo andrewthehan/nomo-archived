@@ -19,8 +19,7 @@ val textUpdateBehavior = object : PeriodicBehavior(1f) {
   override fun trigger() {
     val fps = Gdx.graphics.getFramesPerSecond()
 
-    val entities = entityComponentManager.getEntities(this)
-    entities.forEach {
+    entityComponentManager[this].forEach {
       val textRenders = entityComponentManager.getComponents<TextRenderBehavior>()
       textRenders.forEach {
         it.text = "${fps} fps"

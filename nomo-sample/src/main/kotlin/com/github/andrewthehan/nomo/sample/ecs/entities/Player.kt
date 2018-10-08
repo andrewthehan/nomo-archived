@@ -57,7 +57,7 @@ fun create(engine: Engine, entity: Entity = randomId()): Entity {
     object : AbstractBehavior() {
       @EventListener
       fun slowDown(event: UpdateEvent) {
-        val entities = entityComponentManager.getEntities(this)
+        val entities = entityComponentManager[this]
         entities
           .map { entityComponentManager.getComponent<Velocity2dAttribute>(it) }
           .filter { !it.isZero() }

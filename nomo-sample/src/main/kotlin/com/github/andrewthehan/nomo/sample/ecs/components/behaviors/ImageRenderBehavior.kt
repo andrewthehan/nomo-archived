@@ -9,8 +9,6 @@ import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
 
 import com.badlogic.gdx.graphics.Texture;
 
-import ktx.graphics.*
-
 @Dependent(Position2dAttribute::class)
 class ImageRenderBehavior(var texture: Texture) : RenderBehavior() {
   @MutableInject
@@ -19,12 +17,12 @@ class ImageRenderBehavior(var texture: Texture) : RenderBehavior() {
   @EventListener
   override fun render(event: RenderEvent) {
     val batch = event.batch
-    val entities = entityComponentManager.getEntities(this)
-    batch.use {
-      entities.forEach {
-        val position = entityComponentManager.getComponent<Position2dAttribute>(it)
-        batch.draw(texture, position.x, position.y)
-      }
+    val entities = entityComponentManager[this]
+    batch.begin()
+    entities.forEach {
+      val position = entityComponentManager.getComponent<Position2dAttribute>(it)
+      batch.draw(texture, position.x, position.y)
     }
+    batch.end()
   }
 }
