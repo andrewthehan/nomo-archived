@@ -16,7 +16,7 @@ open class Vector2i(x: Int = 0, y: Int = 0) : Vector2<Int, Vector2i>(x, y) {
   override fun toVectorType(init: (Int) -> Int) = Vector2i(init(0), init(1))
 }
 
-abstract class Vector2<NumberType : Number, VectorType: Vector<NumberType, *>>(x: NumberType = zero<NumberType>(), y: NumberType = zero<NumberType>()) : AbstractVector<NumberType, VectorType>(x, y), Vector<NumberType, VectorType> {
+abstract class Vector2<NumberType : Number, VectorType: Vector<NumberType, *>>(x: NumberType = zero<NumberType>(), y: NumberType = zero<NumberType>()) : AbstractVector<NumberType, VectorType>(x, y) {
   val x: NumberType
     get() = this[0]
   val y: NumberType

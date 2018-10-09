@@ -16,7 +16,7 @@ open class MutableVector1i(x: Int = 0) : MutableVector1<Int, MutableVector1i>(x)
   override fun toVectorType(init: (Int) -> Int) = MutableVector1i(init(0))
 }
 
-abstract class MutableVector1<NumberType : Number, VectorType: MutableVector<NumberType, *>>(x: NumberType = zero<NumberType>()) : AbstractMutableVector<NumberType, VectorType>(x), MutableVector<NumberType, VectorType> {
+abstract class MutableVector1<NumberType : Number, VectorType: MutableVector<NumberType, *>>(x: NumberType = zero<NumberType>()) : AbstractMutableVector<NumberType, VectorType>(x) {
   var x: NumberType
     get() = this[0]
     set(value: NumberType) {

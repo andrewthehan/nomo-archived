@@ -16,7 +16,7 @@ open class MutableVector3i(x: Int = 0, y: Int = 0, z: Int = 0) : MutableVector3<
   override fun toVectorType(init: (Int) -> Int) = MutableVector3i(init(0), init(1), init(2))
 }
 
-abstract class MutableVector3<NumberType : Number, VectorType: MutableVector<NumberType, *>>(x: NumberType = zero<NumberType>(), y: NumberType = zero<NumberType>(), z: NumberType = zero<NumberType>()) : AbstractMutableVector<NumberType, VectorType>(x, y, z), MutableVector<NumberType, VectorType> {
+abstract class MutableVector3<NumberType : Number, VectorType: MutableVector<NumberType, *>>(x: NumberType = zero<NumberType>(), y: NumberType = zero<NumberType>(), z: NumberType = zero<NumberType>()) : AbstractMutableVector<NumberType, VectorType>(x, y, z) {
   var x: NumberType
     get() = this[0]
     set(value: NumberType) {
