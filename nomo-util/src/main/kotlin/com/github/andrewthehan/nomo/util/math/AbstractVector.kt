@@ -13,11 +13,11 @@ abstract class AbstractVector<NumberType : Number, VectorType : Vector<NumberTyp
   
   override operator fun unaryPlus() = toVectorType { this[it] }
   override operator fun unaryMinus() = toVectorType { -this[it] }
-  override operator fun plus(vector: VectorType): VectorType = binaryOperation(vector) { a, b -> a + b }
-  override operator fun minus(vector: VectorType): VectorType = binaryOperation(vector) { a, b -> a - b }
+  override operator fun plus(vector: Vector<NumberType, *>): VectorType = binaryOperation(vector) { a, b -> a + b }
+  override operator fun minus(vector: Vector<NumberType, *>): VectorType = binaryOperation(vector) { a, b -> a - b }
   override operator fun times(scalar: NumberType): VectorType = binaryOperation(scalar) { a, b -> a * b }
   override operator fun div(scalar: NumberType): VectorType = binaryOperation(scalar) { a, b -> a / b }
-  override infix fun dot(vector: VectorType): NumberType {
+  override infix fun dot(vector: Vector<NumberType, *>): NumberType {
     require(dimensions == vector.dimensions) { "Dot product only applies to two vectors of equal dimensions: ${dimensions} != ${vector.dimensions} "}
     return binaryOperation(vector) { a, b -> a * b }.components.sum()
   }
@@ -28,7 +28,7 @@ abstract class AbstractVector<NumberType : Number, VectorType : Vector<NumberTyp
 
   abstract fun toVectorType(init: (Int) -> NumberType): VectorType
   
-  private fun binaryOperation(vector: VectorType, operation: (NumberType, NumberType) -> NumberType): VectorType {
+  private fun binaryOperation(vector: Vector<NumberType, *>, operation: (NumberType, NumberType) -> NumberType): VectorType {
     require(dimensions == vector.dimensions) { "Arithmetic operations on two vectors requires vectors of equal dimensions: ${dimensions} != ${vector.dimensions} "}
     return toVectorType { operation(components[it], vector.components[it]) }
   }

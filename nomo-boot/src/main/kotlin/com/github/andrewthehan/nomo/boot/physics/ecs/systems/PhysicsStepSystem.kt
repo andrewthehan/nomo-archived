@@ -12,7 +12,7 @@ class PhysicsStepSystem : AbstractSystem() {
   @MutableInject
   lateinit var entityComponentManager: EntityComponentManager
 
-  private inline fun <VectorType : MutableVector<*, *>, reified A, reified B> step(delta: Float) where
+  private inline fun <VectorType : Vector<Float, *>, reified A, reified B> step(delta: Float) where
       A : MutableVector<Float, VectorType>,
       A : Attribute,
       A : Exclusive,

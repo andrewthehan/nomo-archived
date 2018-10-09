@@ -31,6 +31,8 @@ import com.github.andrewthehan.nomo.sample.ecs.components.behaviors.*
 import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.*
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.*
 
+import kotlin.math.*
+
 class EcsEngine() : Engine {
   override val managers = TypedSet<Manager>()
   override val tasks = TypedSet<Task>()
@@ -80,12 +82,16 @@ class Application : ApplicationAdapter() {
     val components = arrayOf(
       Position2dAttribute(),
       Velocity2dAttribute(),
-      MutableShape2fAttribute(listOf(MutableVector2f(-1f, -1f), MutableVector2f(-1f, 1f), MutableVector2f(1f, 1f), MutableVector2f(1f, -1f)).map { it * 30f }.toMutableList()),
+      Shape2fAttribute(rootsOfUnity(3).map { it * 20f }),
       ShapeRenderBehavior(Color(0f, .7f, .7f, 1f)),
       FollowBehavior(player, 300f)
     )
 
     entityComponentManager.add("enemy", components)
+  }
+
+  fun rootsOfUnity(n: Int): List<Vector2f> {
+    return (0 until n).map { Vector2f(cos(it * 2 * PI / n).toFloat(), sin(it * 2 * PI / n).toFloat()) }
   }
 
   override fun render() {

@@ -9,12 +9,12 @@ abstract class AbstractMutableVector<NumberType : Number, VectorType : MutableVe
     this.components = MutableList(this.dimensions) { elements[it] }
   }
   
-  override operator fun plusAssign(vector: VectorType): Unit = mutableBinaryOperation(vector) { a, b -> a + b }
-  override operator fun minusAssign(vector: VectorType): Unit = mutableBinaryOperation(vector) { a, b -> a - b }
+  override operator fun plusAssign(vector: Vector<NumberType, *>): Unit = mutableBinaryOperation(vector) { a, b -> a + b }
+  override operator fun minusAssign(vector: Vector<NumberType, *>): Unit = mutableBinaryOperation(vector) { a, b -> a - b }
   override operator fun timesAssign(scalar: NumberType): Unit = mutableBinaryOperation(scalar) { a, b -> a * b }
   override operator fun divAssign(scalar: NumberType): Unit = mutableBinaryOperation(scalar) { a, b -> a / b }
 
-  override fun set(vector: VectorType): Unit {
+  override fun set(vector: Vector<NumberType, *>): Unit {
     require(dimensions == vector.dimensions) { "Vector dimensions should match: ${dimensions} != ${vector.dimensions}" }
     (0 until dimensions).forEach {
       components[it] = vector.components[it]
@@ -24,7 +24,7 @@ abstract class AbstractMutableVector<NumberType : Number, VectorType : MutableVe
     components[i] = value
   }
 
-  private fun mutableBinaryOperation(vector: VectorType, operation: (NumberType, NumberType) -> NumberType) {
+  private fun mutableBinaryOperation(vector: Vector<NumberType, *>, operation: (NumberType, NumberType) -> NumberType) {
     require(dimensions == vector.dimensions) { "Arithmetic operations on two vectors requires vectors of equal dimensions: ${dimensions} != ${vector.dimensions} "}
     (0 until dimensions).forEach {
       components[it] = operation(components[it], vector.components[it])

@@ -1,8 +1,9 @@
 package com.github.andrewthehan.nomo.sample.ecs.entities
 
-import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
-import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Velocity2dAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Acceleration2dAttribute
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Shape2fAttribute
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Velocity2dAttribute
 import com.github.andrewthehan.nomo.boot.io.ecs.components.behaviors.KeyActionBehavior
 import com.github.andrewthehan.nomo.boot.io.ecs.components.behaviors.KeyPressActionBehavior
 import com.github.andrewthehan.nomo.boot.io.ecs.components.behaviors.KeyReleaseActionBehavior
@@ -11,7 +12,7 @@ import com.github.andrewthehan.nomo.boot.util.ecs.events.UpdateEvent
 import com.github.andrewthehan.nomo.core.ecs.types.Component
 import com.github.andrewthehan.nomo.core.ecs.types.Engine
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
-import com.github.andrewthehan.nomo.sample.ecs.components.behaviors.ImageRenderBehavior
+import com.github.andrewthehan.nomo.sample.ecs.components.behaviors.ShapeRenderBehavior
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.EventListener
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.MutableInject
 import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.AbstractBehavior
@@ -19,8 +20,7 @@ import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
 import com.github.andrewthehan.nomo.util.math.*
 import com.github.andrewthehan.nomo.util.randomId
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 
 import kotlin.math.abs
 import kotlin.math.sign
@@ -51,7 +51,8 @@ fun create(engine: Engine, entity: Entity = randomId()): Entity {
     Position2dAttribute(),
     Velocity2dAttribute(),
     Acceleration2dAttribute(),
-    ImageRenderBehavior(Texture(Gdx.files.internal("image.png"))),
+    Shape2fAttribute(listOf(Vector2f(-1f, -1f), Vector2f(-1f, 1f), Vector2f(1f, 1f), Vector2f(1f, -1f)).map { it * 20f }),
+    ShapeRenderBehavior(Color(1f, 1f, 1f, 1f)),
     KeyPressActionBehavior(keyPressActionMap),
     KeyReleaseActionBehavior(keyReleaseActionMap),
     object : AbstractBehavior() {
