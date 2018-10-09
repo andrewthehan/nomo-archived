@@ -1,7 +1,6 @@
 package com.github.andrewthehan.nomo.boot.physics.ecs.components.behaviors
 
-import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
-import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Velocity2dAttribute
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.*
 import com.github.andrewthehan.nomo.boot.util.ecs.events.UpdateEvent
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.EventListener
@@ -24,12 +23,12 @@ class FollowBehavior(var target: Entity, var speed: Float) : AbstractBehavior(),
     val velocity = entityComponentManager.getComponent<Velocity2dAttribute>(entity)
 
     val distance = targetPosition - position
-
-    if (distance.lengthFloat() == 0f) {
+    val length = distance.lengthFloat()
+    if (length == 0f) {
       return
     }
 
-    val direction = distance.normalizeFloat()
+    val direction = distance.map { it / length }
     velocity.set(speed * direction)
   }
 }

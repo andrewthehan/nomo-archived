@@ -1,28 +1,23 @@
 package com.github.andrewthehan.nomo.boot.physics.ecs.systems
 
-import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Acceleration2dAttribute
-import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Acceleration3dAttribute
-import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
-import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position3dAttribute
-import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Velocity2dAttribute
-import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Velocity3dAttribute
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.*
 import com.github.andrewthehan.nomo.core.ecs.types.Attribute
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.MutableInject
 import com.github.andrewthehan.nomo.sdk.ecs.interfaces.Exclusive
 import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
 import com.github.andrewthehan.nomo.sdk.ecs.systems.AbstractSystem
-import com.github.andrewthehan.nomo.util.math.MutableVector
+import com.github.andrewthehan.nomo.util.math.*
 
 class PhysicsStepSystem : AbstractSystem() {
   @MutableInject
   lateinit var entityComponentManager: EntityComponentManager
 
-  private inline fun <reified A, reified B> step(delta: Float) where
+  private inline fun <VectorType : MutableVector<*, *>, reified A, reified B> step(delta: Float) where
+      A : MutableVector<Float, VectorType>,
       A : Attribute,
-      A : MutableVector<Float>,
       A : Exclusive,
+      B : MutableVector<Float, VectorType>,
       B : Attribute,
-      B : MutableVector<Float>,
       B : Exclusive {
     entityComponentManager
       .getComponents<A>()
@@ -37,9 +32,9 @@ class PhysicsStepSystem : AbstractSystem() {
   }
 
   override fun update(delta: Float) {
-    step<Velocity2dAttribute, Position2dAttribute>(delta)
-    step<Acceleration2dAttribute, Velocity2dAttribute>(delta)
-    step<Velocity3dAttribute, Position3dAttribute>(delta)
-    step<Acceleration3dAttribute, Velocity3dAttribute>(delta)
+    step<MutableVector2f, Velocity2dAttribute, Position2dAttribute>(delta)
+    step<MutableVector2f, Acceleration2dAttribute, Velocity2dAttribute>(delta)
+    step<MutableVector3f, Velocity3dAttribute, Position3dAttribute>(delta)
+    step<MutableVector3f, Acceleration3dAttribute, Velocity3dAttribute>(delta)
   }
 }

@@ -16,7 +16,7 @@ import com.github.andrewthehan.nomo.util.math.MutableVector2i
 import com.github.andrewthehan.nomo.util.math.MutableVector3f
 import com.github.andrewthehan.nomo.util.math.MutableVector3i
 
-open class ShapeAttribute(open val points: List<Vector<*>>) : AbstractAttribute()
+open class ShapeAttribute(open val points: List<Vector<*, *>>) : AbstractAttribute()
 
 open class Shape1fAttribute(override val points: List<Vector1f>) : ShapeAttribute(points)
 
@@ -30,7 +30,7 @@ open class Shape3fAttribute(override val points: List<Vector3f>) : ShapeAttribut
 
 open class Shape3iAttribute(override val points: List<Vector3i>) : ShapeAttribute(points)
 
-open class MutableShapeAttribute(override val points: MutableList<out MutableVector<*>>) : ShapeAttribute(points)
+open class MutableShapeAttribute(override val points: MutableList<out MutableVector<*, *>>) : ShapeAttribute(points)
 
 open class MutableShape1fAttribute(override val points: MutableList<MutableVector1f>) : MutableShapeAttribute(points)
 
