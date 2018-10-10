@@ -89,9 +89,14 @@ class Application : ApplicationAdapter() {
       ShapeRenderBehavior(Color(0f, .7f, .7f, 1f)),
       CollidableAttribute(),
       FollowBehavior(player, 300f),
-      object : AbstractBehavior() {
+      object : AbstractBehavior(), Pendant {
         @EventListener
         fun collide(event: CollisionEvent) {
+          val entity = entityComponentManager.getEntity(this)
+          if (!event.includes(entity)) {
+            return
+          }
+
           println(event)
         }
       }
@@ -106,9 +111,14 @@ class Application : ApplicationAdapter() {
       ShapeRenderBehavior(Color(0f, .7f, .7f, 1f)),
       CollidableAttribute(),
       FollowBehavior(player, 200f),
-      object : AbstractBehavior() {
+      object : AbstractBehavior(), Pendant {
         @EventListener
         fun collide(event: CollisionEvent) {
+          val entity = entityComponentManager.getEntity(this)
+          if (!event.includes(entity)) {
+            return
+          }
+          
           println(event)
         }
       }
