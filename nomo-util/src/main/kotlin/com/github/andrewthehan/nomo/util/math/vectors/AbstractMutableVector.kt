@@ -1,6 +1,8 @@
-package com.github.andrewthehan.nomo.util.math
+package com.github.andrewthehan.nomo.util.math.vectors
 
-abstract class AbstractMutableVector<NumberType : Number, VectorType : MutableVector<NumberType, *>> : AbstractVector<NumberType, VectorType>, MutableVector<NumberType, VectorType> {
+import com.github.andrewthehan.nomo.util.math.*
+
+abstract class AbstractMutableVector<NumberType : Number, VectorType : MutableVector<NumberType, VectorType>> : AbstractVector<NumberType, VectorType>, MutableVector<NumberType, VectorType> {
   override val dimensions: Int
   override val components: MutableList<NumberType>
 

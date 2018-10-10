@@ -1,6 +1,8 @@
-package com.github.andrewthehan.nomo.util.math
+package com.github.andrewthehan.nomo.util.math.vectors
 
-interface Vector<NumberType : Number, VectorType> {
+import com.github.andrewthehan.nomo.util.math.*
+
+interface Vector<NumberType : Number, VectorType : Vector<NumberType, VectorType>> {
   val dimensions: Int
   val components: List<NumberType>
 
@@ -11,6 +13,9 @@ interface Vector<NumberType : Number, VectorType> {
   operator fun times(scalar: NumberType): VectorType
   operator fun div(scalar: NumberType): VectorType
   infix fun dot(vector: Vector<NumberType, *>): NumberType
+
+  fun lengthFloat(): Float
+  fun lengthDouble(): Double
 
   operator fun get(i: Int): NumberType
 

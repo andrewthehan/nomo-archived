@@ -1,7 +1,7 @@
 package com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes
 
 import com.github.andrewthehan.nomo.core.ecs.types.Attribute
-import com.github.andrewthehan.nomo.util.math.*
+import com.github.andrewthehan.nomo.util.math.vectors.*
 import com.github.andrewthehan.nomo.util.randomId
 
 abstract class Vector1fAttribute(x: Float = 0f) : Vector1f(x), Attribute {

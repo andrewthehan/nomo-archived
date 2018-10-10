@@ -2,6 +2,7 @@ package com.github.andrewthehan.nomo.sample
 
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.*
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.behaviors.*
+import com.github.andrewthehan.nomo.boot.physics.ecs.events.*
 import com.github.andrewthehan.nomo.boot.physics.ecs.systems.*
 import com.github.andrewthehan.nomo.boot.io.ecs.components.behaviors.*
 import com.github.andrewthehan.nomo.boot.io.ecs.events.*
@@ -17,7 +18,8 @@ import com.github.andrewthehan.nomo.sdk.ecs.managers.*
 import com.github.andrewthehan.nomo.sdk.ecs.tasks.*
 import com.github.andrewthehan.nomo.sdk.ecs.util.*
 import com.github.andrewthehan.nomo.util.collections.*
-import com.github.andrewthehan.nomo.util.math.*
+import com.github.andrewthehan.nomo.util.math.shapes.*
+import com.github.andrewthehan.nomo.util.math.vectors.*
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
@@ -72,26 +74,47 @@ class Application : ApplicationAdapter() {
       add(RenderSystem())
       add(PhysicsStepSystem())
       add(KeyIoSystem())
+      add(CollisionDetectionSystem())
     }
 
-    create(engine, 3f, 15f)
-    val player = create(engine)
+    create(engine, 3f, 15f, "fps")
+    val player = create(engine, "player")
 
     val entityComponentManager = engine.managers.get<EntityComponentManager>()!!
 
-    val components = arrayOf(
+    val circleComponents = arrayOf(
       Position2dAttribute(),
       Velocity2dAttribute(),
-      Shape2fAttribute(rootsOfUnity(3).map { it * 20f }),
+      Shape2fAttribute(RegularPolygon(Vector2f(), 20f, 100).points),
       ShapeRenderBehavior(Color(0f, .7f, .7f, 1f)),
-      FollowBehavior(player, 300f)
+      CollidableAttribute(),
+      FollowBehavior(player, 300f),
+      object : AbstractBehavior() {
+        @EventListener
+        fun collide(event: CollisionEvent) {
+          println(event)
+        }
+      }
     )
 
-    entityComponentManager.add("enemy", components)
-  }
+    entityComponentManager.add("circleEnemy", circleComponents)
 
-  fun rootsOfUnity(n: Int): List<Vector2f> {
-    return (0 until n).map { Vector2f(cos(it * 2 * PI / n).toFloat(), sin(it * 2 * PI / n).toFloat()) }
+    val triangleComponents = arrayOf(
+      Position2dAttribute(),
+      Velocity2dAttribute(),
+      Shape2fAttribute(RegularPolygon(Vector2f(), 20f, 3).points),
+      ShapeRenderBehavior(Color(0f, .7f, .7f, 1f)),
+      CollidableAttribute(),
+      FollowBehavior(player, 200f),
+      object : AbstractBehavior() {
+        @EventListener
+        fun collide(event: CollisionEvent) {
+          println(event)
+        }
+      }
+    )
+
+    entityComponentManager.add("triangleEnemy", triangleComponents)
   }
 
   override fun render() {

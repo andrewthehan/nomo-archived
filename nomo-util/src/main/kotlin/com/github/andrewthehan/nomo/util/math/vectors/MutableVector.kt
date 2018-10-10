@@ -1,6 +1,6 @@
-package com.github.andrewthehan.nomo.util.math
+package com.github.andrewthehan.nomo.util.math.vectors
 
-interface MutableVector<NumberType : Number, VectorType> : Vector<NumberType, VectorType> {
+interface MutableVector<NumberType : Number, VectorType : Vector<NumberType, VectorType>> : Vector<NumberType, VectorType> {
   override val components: MutableList<NumberType>
   
   operator fun plusAssign(vector: Vector<NumberType, *>): Unit
@@ -11,3 +11,5 @@ interface MutableVector<NumberType : Number, VectorType> : Vector<NumberType, Ve
   fun set(vector: Vector<NumberType, *>): Unit
   operator fun set(i: Int, value: NumberType): Unit
 }
+
+// fun <NumberType : NumberType, VectorType> Vector<NumberType, VectorType>.toMutable(): MutableVector<NumberType, VectorType> 

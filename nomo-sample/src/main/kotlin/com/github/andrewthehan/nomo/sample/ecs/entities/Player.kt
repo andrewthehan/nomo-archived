@@ -1,6 +1,7 @@
 package com.github.andrewthehan.nomo.sample.ecs.entities
 
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Acceleration2dAttribute
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.CollidableAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Shape2fAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Velocity2dAttribute
@@ -17,7 +18,8 @@ import com.github.andrewthehan.nomo.sdk.ecs.annotations.EventListener
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.MutableInject
 import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.AbstractBehavior
 import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
-import com.github.andrewthehan.nomo.util.math.*
+import com.github.andrewthehan.nomo.util.math.shapes.*
+import com.github.andrewthehan.nomo.util.math.vectors.*
 import com.github.andrewthehan.nomo.util.randomId
 
 import com.badlogic.gdx.graphics.Color
@@ -51,8 +53,9 @@ fun create(engine: Engine, entity: Entity = randomId()): Entity {
     Position2dAttribute(),
     Velocity2dAttribute(),
     Acceleration2dAttribute(),
-    Shape2fAttribute(listOf(Vector2f(-1f, -1f), Vector2f(-1f, 1f), Vector2f(1f, 1f), Vector2f(1f, -1f)).map { it * 20f }),
+    Shape2fAttribute(Rectangle(Vector2f(), 30f, 30f).points),
     ShapeRenderBehavior(Color(1f, 1f, 1f, 1f)),
+    CollidableAttribute(),
     KeyPressActionBehavior(keyPressActionMap),
     KeyReleaseActionBehavior(keyReleaseActionMap),
     object : AbstractBehavior() {

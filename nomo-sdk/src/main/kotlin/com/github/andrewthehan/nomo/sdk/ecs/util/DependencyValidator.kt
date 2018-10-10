@@ -2,6 +2,7 @@ package com.github.andrewthehan.nomo.sdk.ecs.util
 
 import com.github.andrewthehan.nomo.sdk.ecs.util.getDependencies
 
+import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.KClass
 
 fun hasDependencies(classes: Iterable<KClass<*>>): Boolean {
@@ -9,8 +10,7 @@ fun hasDependencies(classes: Iterable<KClass<*>>): Boolean {
     .map { it.getDependencies() }
     .filter { it.any() }
     .none {
-      val missingDependencies = it.subtract(classes)
-      missingDependencies.any()
+      it.any { dependency -> classes.none { it.isSubclassOf(dependency) } }
     }
 }
 
@@ -19,6 +19,6 @@ fun getMissingDependencies(classes: Iterable<KClass<*>>): Iterable<KClass<*>> {
     .map { it.getDependencies() }
     .filter { it.any() }
     .flatMap {
-      it.subtract(classes)
+      it.filter { dependency -> classes.none { it.isSubclassOf(dependency) } }
     }
 }

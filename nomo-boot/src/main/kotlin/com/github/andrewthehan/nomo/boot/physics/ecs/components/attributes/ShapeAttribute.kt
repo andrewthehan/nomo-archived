@@ -1,20 +1,20 @@
 package com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes
 
 import com.github.andrewthehan.nomo.sdk.ecs.components.attributes.AbstractAttribute
-import com.github.andrewthehan.nomo.util.math.Vector
-import com.github.andrewthehan.nomo.util.math.Vector1f
-import com.github.andrewthehan.nomo.util.math.Vector1i
-import com.github.andrewthehan.nomo.util.math.Vector2f
-import com.github.andrewthehan.nomo.util.math.Vector2i
-import com.github.andrewthehan.nomo.util.math.Vector3f
-import com.github.andrewthehan.nomo.util.math.Vector3i
-import com.github.andrewthehan.nomo.util.math.MutableVector
-import com.github.andrewthehan.nomo.util.math.MutableVector1f
-import com.github.andrewthehan.nomo.util.math.MutableVector1i
-import com.github.andrewthehan.nomo.util.math.MutableVector2f
-import com.github.andrewthehan.nomo.util.math.MutableVector2i
-import com.github.andrewthehan.nomo.util.math.MutableVector3f
-import com.github.andrewthehan.nomo.util.math.MutableVector3i
+import com.github.andrewthehan.nomo.util.math.vectors.Vector
+import com.github.andrewthehan.nomo.util.math.vectors.Vector1f
+import com.github.andrewthehan.nomo.util.math.vectors.Vector1i
+import com.github.andrewthehan.nomo.util.math.vectors.Vector2f
+import com.github.andrewthehan.nomo.util.math.vectors.Vector2i
+import com.github.andrewthehan.nomo.util.math.vectors.Vector3f
+import com.github.andrewthehan.nomo.util.math.vectors.Vector3i
+import com.github.andrewthehan.nomo.util.math.vectors.MutableVector
+import com.github.andrewthehan.nomo.util.math.vectors.MutableVector1f
+import com.github.andrewthehan.nomo.util.math.vectors.MutableVector1i
+import com.github.andrewthehan.nomo.util.math.vectors.MutableVector2f
+import com.github.andrewthehan.nomo.util.math.vectors.MutableVector2i
+import com.github.andrewthehan.nomo.util.math.vectors.MutableVector3f
+import com.github.andrewthehan.nomo.util.math.vectors.MutableVector3i
 
 open class ShapeAttribute(open val points: List<Vector<*, *>>) : AbstractAttribute()
 

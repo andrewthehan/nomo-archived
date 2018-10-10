@@ -6,13 +6,13 @@ import com.github.andrewthehan.nomo.sdk.ecs.annotations.MutableInject
 import com.github.andrewthehan.nomo.sdk.ecs.interfaces.Exclusive
 import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
 import com.github.andrewthehan.nomo.sdk.ecs.systems.AbstractSystem
-import com.github.andrewthehan.nomo.util.math.*
+import com.github.andrewthehan.nomo.util.math.vectors.*
 
 class PhysicsStepSystem : AbstractSystem() {
   @MutableInject
   lateinit var entityComponentManager: EntityComponentManager
 
-  private inline fun <VectorType : Vector<Float, *>, reified A, reified B> step(delta: Float) where
+  private inline fun <VectorType : MutableVector<Float, VectorType>, reified A, reified B> step(delta: Float) where
       A : MutableVector<Float, VectorType>,
       A : Attribute,
       A : Exclusive,

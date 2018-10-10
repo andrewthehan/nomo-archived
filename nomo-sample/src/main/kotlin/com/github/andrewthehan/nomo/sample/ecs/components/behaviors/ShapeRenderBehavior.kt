@@ -7,7 +7,7 @@ import com.github.andrewthehan.nomo.sdk.ecs.annotations.Dependent
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.EventListener
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.MutableInject
 import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
-import com.github.andrewthehan.nomo.util.math.*
+import com.github.andrewthehan.nomo.util.math.vectors.*
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.Color
@@ -29,12 +29,7 @@ class ShapeRenderBehavior(var color: Color = Color(1f, 1f, 1f, 1f)) : RenderBeha
       shapes.forEach { shape ->
         val locations = shape.points.map { it + position }
         renderer.setColor(color)
-        (0 until locations.size - 1).forEach {
-          val a = locations[it]
-          val b = locations[it + 1]
-          renderer.line(a.x, a.y, b.x, b.y)
-        }
-        renderer.line(locations.first().x, locations.first().y, locations.last().x, locations.last().y)
+        renderer.polygon(locations.flatMap { it.components }.toFloatArray())
       }
     }
     renderer.end()
