@@ -24,8 +24,11 @@ abstract class AbstractVector<NumberType : Number, VectorType : Vector<NumberTyp
     return binaryOperation(vector) { a, b -> a * b }.components.sum()
   }
 
-  override fun lengthFloat(): Float = sqrt(map { it * it }.components.sum().toFloat())
-  override fun lengthDouble(): Double = sqrt(map { it * it }.components.sum().toDouble())
+  override fun length(): NumberType = sqrt(map { it * it }.components.sum().toFloat()).cast<NumberType>()
+  override fun normalized(): VectorType {
+    val length = length()
+    return map { it / length }
+  }
 
   override operator fun get(i: Int): NumberType = components[i]
   

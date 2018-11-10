@@ -1,45 +1,14 @@
 package com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes
 
 import com.github.andrewthehan.nomo.sdk.ecs.components.attributes.AbstractAttribute
-import com.github.andrewthehan.nomo.util.math.vectors.Vector
-import com.github.andrewthehan.nomo.util.math.vectors.Vector1f
-import com.github.andrewthehan.nomo.util.math.vectors.Vector1i
-import com.github.andrewthehan.nomo.util.math.vectors.Vector2f
-import com.github.andrewthehan.nomo.util.math.vectors.Vector2i
-import com.github.andrewthehan.nomo.util.math.vectors.Vector3f
-import com.github.andrewthehan.nomo.util.math.vectors.Vector3i
-import com.github.andrewthehan.nomo.util.math.vectors.MutableVector
-import com.github.andrewthehan.nomo.util.math.vectors.MutableVector1f
-import com.github.andrewthehan.nomo.util.math.vectors.MutableVector1i
-import com.github.andrewthehan.nomo.util.math.vectors.MutableVector2f
-import com.github.andrewthehan.nomo.util.math.vectors.MutableVector2i
-import com.github.andrewthehan.nomo.util.math.vectors.MutableVector3f
-import com.github.andrewthehan.nomo.util.math.vectors.MutableVector3i
+import com.github.andrewthehan.nomo.util.math.shapes.*
+import com.github.andrewthehan.nomo.util.math.vectors.*
 
-open class ShapeAttribute(open val points: List<Vector<*, *>>) : AbstractAttribute()
+abstract class ShapeAttribute<VectorType : Vector<*, *>>(shape: Shape<VectorType>) : AbstractAttribute(), Shape<VectorType> by shape
 
-open class Shape1fAttribute(override val points: List<Vector1f>) : ShapeAttribute(points)
-
-open class Shape1iAttribute(override val points: List<Vector1i>) : ShapeAttribute(points)
-
-open class Shape2fAttribute(override val points: List<Vector2f>) : ShapeAttribute(points)
-
-open class Shape2iAttribute(override val points: List<Vector2i>) : ShapeAttribute(points)
-
-open class Shape3fAttribute(override val points: List<Vector3f>) : ShapeAttribute(points)
-
-open class Shape3iAttribute(override val points: List<Vector3i>) : ShapeAttribute(points)
-
-open class MutableShapeAttribute(override val points: MutableList<out MutableVector<*, *>>) : ShapeAttribute(points)
-
-open class MutableShape1fAttribute(override val points: MutableList<MutableVector1f>) : MutableShapeAttribute(points)
-
-open class MutableShape1iAttribute(override val points: MutableList<MutableVector1i>) : MutableShapeAttribute(points)
-
-open class MutableShape2fAttribute(override val points: MutableList<MutableVector2f>) : MutableShapeAttribute(points)
-
-open class MutableShape2iAttribute(override val points: MutableList<MutableVector2i>) : MutableShapeAttribute(points)
-
-open class MutableShape3fAttribute(override val points: MutableList<MutableVector3f>) : MutableShapeAttribute(points)
-
-open class MutableShape3iAttribute(override val points: MutableList<MutableVector3i>) : MutableShapeAttribute(points)
+open class Shape1fAttribute(shape: Shape<Vector1f>) : ShapeAttribute<Vector1f>(shape)
+open class Shape1iAttribute(shape: Shape<Vector1i>) : ShapeAttribute<Vector1i>(shape)
+open class Shape2fAttribute(shape: Shape<Vector2f>) : ShapeAttribute<Vector2f>(shape)
+open class Shape2iAttribute(shape: Shape<Vector2i>) : ShapeAttribute<Vector2i>(shape)
+open class Shape3fAttribute(shape: Shape<Vector3f>) : ShapeAttribute<Vector3f>(shape)
+open class Shape3iAttribute(shape: Shape<Vector3i>) : ShapeAttribute<Vector3i>(shape)

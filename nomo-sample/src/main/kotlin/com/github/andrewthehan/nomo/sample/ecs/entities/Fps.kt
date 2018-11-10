@@ -28,7 +28,7 @@ val textUpdateBehavior = object : PeriodicBehavior(1f) {
   }
 }
 
-fun create(engine: Engine, x: Float, y: Float, entity: Entity = randomId()): Entity {
+fun createFps(engine: Engine, x: Float, y: Float, entity: Entity = randomId()): Entity {
   val components = arrayOf(
     Position2dAttribute(x, y),
     TextRenderBehavior(),

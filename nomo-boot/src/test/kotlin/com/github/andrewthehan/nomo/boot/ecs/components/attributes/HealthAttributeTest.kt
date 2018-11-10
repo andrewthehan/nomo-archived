@@ -1,4 +1,4 @@
-package com.github.andrewthehan.nomo.boot.ecs.components.attributes
+package com.github.andrewthehan.nomo.boot.combat.ecs.components.attributes
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -7,35 +7,18 @@ import kotlin.test.assertTrue
 class HealthAttributeTest {
   @Test
   fun testHealthAttribute_holistic() {
-    val healthAttribute = HealthAttribute(100)
-    assertEquals(100, healthAttribute.value)
-
-    healthAttribute.damage(25)
-    assertEquals(75, healthAttribute.value)
-
-    healthAttribute.heal(50)
-    assertEquals(125, healthAttribute.value)
-
-    assertTrue(healthAttribute.isAlive())
-
-    healthAttribute.damage(125)
-    assertTrue(healthAttribute.isDead())
-  }
-  
-  @Test
-  fun testHealthAttribute_float() {
     val healthAttribute = HealthAttribute(100f)
     assertEquals(100f, healthAttribute.value)
 
-    healthAttribute.damage(12.5f)
-    assertEquals(87.5f, healthAttribute.value)
+    healthAttribute.damage(25f)
+    assertEquals(75f, healthAttribute.value)
 
-    healthAttribute.heal(2.5f)
-    assertEquals(90f, healthAttribute.value)
+    healthAttribute.heal(50f)
+    assertEquals(125f, healthAttribute.value)
 
     assertTrue(healthAttribute.isAlive())
 
-    healthAttribute.damage(90f)
+    healthAttribute.damage(125f)
     assertTrue(healthAttribute.isDead())
   }
 

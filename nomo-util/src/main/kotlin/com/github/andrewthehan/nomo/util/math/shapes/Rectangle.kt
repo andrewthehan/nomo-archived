@@ -8,10 +8,8 @@ open class Rectangle<NumberType : Number, VectorType : Vector2<NumberType, Vecto
   override val center: VectorType
 
   constructor(center: VectorType, width: NumberType, height: NumberType) {
-    @Suppress("UNCHECKED_CAST")
-    val halfWidth = width / 2 as NumberType
-    @Suppress("UNCHECKED_CAST")
-    val halfHeight = height / 2 as NumberType
+    val halfWidth = (width / 2).cast<NumberType>()
+    val halfHeight = (height / 2).cast<NumberType>()
     this.points = listOf(
       center + center.vectorTypeOf { listOf(-halfWidth, -halfHeight)[it] },
       center + center.vectorTypeOf { listOf(halfWidth, -halfHeight)[it] },

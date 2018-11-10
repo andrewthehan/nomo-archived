@@ -23,7 +23,7 @@ class FollowBehavior(var target: Entity, var speed: Float) : AbstractBehavior(),
     val velocity = entityComponentManager.getComponent<Velocity2dAttribute>(entity)
 
     val distance = targetPosition - position
-    val length = distance.lengthFloat()
+    val length = distance.length()
     if (length == 0f) {
       return
     }

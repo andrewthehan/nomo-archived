@@ -14,11 +14,13 @@ open class RegularPolygon<NumberType : Number, VectorType : Vector2<NumberType, 
   override val points: List<VectorType>
   override val center: VectorType
 
+  val radius: NumberType
+
   constructor(center: VectorType, radius: NumberType, n: Int) {
-    @Suppress("UNCHECKED_CAST")
     this.points = rootsOfUnity(n).map { point -> 
-      (center + center.vectorTypeOf { point.components[it] as NumberType }) * radius
+      (center + center.vectorTypeOf { point.components[it].cast<NumberType>() }) * radius
     }
     this.center = center
+    this.radius = radius
   }
 }

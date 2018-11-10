@@ -14,8 +14,8 @@ interface Vector<NumberType : Number, VectorType : Vector<NumberType, VectorType
   operator fun div(scalar: NumberType): VectorType
   infix fun dot(vector: Vector<NumberType, *>): NumberType
 
-  fun lengthFloat(): Float
-  fun lengthDouble(): Double
+  fun length(): NumberType
+  fun normalized(): VectorType
 
   operator fun get(i: Int): NumberType
 
