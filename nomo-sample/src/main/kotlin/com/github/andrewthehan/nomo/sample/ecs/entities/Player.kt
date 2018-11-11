@@ -11,7 +11,11 @@ import com.github.andrewthehan.nomo.boot.io.ecs.components.behaviors.KeyPressAct
 import com.github.andrewthehan.nomo.boot.io.ecs.components.behaviors.KeyReleaseActionBehavior
 import com.github.andrewthehan.nomo.boot.io.ecs.events.KeyPressEvent
 import com.github.andrewthehan.nomo.boot.io.ecs.events.KeyReleaseEvent
+import com.github.andrewthehan.nomo.boot.io.ecs.events.MouseButtonPressEvent
+import com.github.andrewthehan.nomo.boot.io.ecs.events.MouseButtonReleaseEvent
+import com.github.andrewthehan.nomo.boot.io.ecs.events.MousePointerEvent
 import com.github.andrewthehan.nomo.boot.io.Key
+import com.github.andrewthehan.nomo.boot.io.MouseButton
 import com.github.andrewthehan.nomo.boot.util.ecs.components.behaviors.PeriodicBehavior
 import com.github.andrewthehan.nomo.boot.util.ecs.events.UpdateEvent
 import com.github.andrewthehan.nomo.core.ecs.types.Component
@@ -95,30 +99,32 @@ class ShootingBehavior : PeriodicBehavior(.1f), Pendant {
   lateinit var entityComponentManager: EntityComponentManager
 
   var isShooting = false
-  var direction = MutableVector2f()
+  lateinit var target: Vector2f
 
   fun shoot() {
     val entity = entityComponentManager[this]
     val position = entityComponentManager.getComponent<Position2dAttribute>(entity)
-    val velocity = entityComponentManager.getComponent<Velocity2dAttribute>(entity)
-    if (velocity.length() != 0f) {
-      direction = velocity.normalized()
-    }
+    val direction = (target - position).normalized()
     createBullet(entityComponentManager.engine, position = position, direction = direction)
   }
 
   @EventListener
-  fun shoot(event: KeyPressEvent) {
-    if (event.key == Key.SPACE) {
+  fun shoot(event: MouseButtonPressEvent) {
+    if (event.mouseButton == MouseButton.LEFT) {
       isShooting = true
     }
   }
 
   @EventListener
-  fun shoot(event: KeyReleaseEvent) {
-    if (event.key == Key.SPACE) {
+  fun shoot(event: MouseButtonReleaseEvent) {
+    if (event.mouseButton == MouseButton.LEFT) {
       isShooting = false
     }
+  }
+
+  @EventListener
+  fun shoot(event: MousePointerEvent) {
+    target = Vector2f(event.position.x.toFloat(), event.position.y.toFloat())
   }
 
   override fun trigger() {

@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.Color
 
 private val bulletVelocity = 2000f
 
-fun createBullet(engine: Engine, entity: Entity = randomId(), position: MutableVector2f, direction: MutableVector2f): Entity {
+fun createBullet(engine: Engine, entity: Entity = randomId(), position: MutableVector2f, direction: Vector2f): Entity {
   val entityComponentManager = engine.managers.get<EntityComponentManager>()!!
   
   val velocity = direction * bulletVelocity

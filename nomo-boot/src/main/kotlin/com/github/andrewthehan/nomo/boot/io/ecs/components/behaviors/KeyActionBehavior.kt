@@ -1,5 +1,6 @@
 package com.github.andrewthehan.nomo.boot.io.ecs.components.behaviors
 
+import com.github.andrewthehan.nomo.boot.io.ecs.events.KeyEvent
 import com.github.andrewthehan.nomo.boot.io.ecs.events.KeyHoldEvent
 import com.github.andrewthehan.nomo.boot.io.ecs.events.KeyPressEvent
 import com.github.andrewthehan.nomo.boot.io.ecs.events.KeyReleaseEvent
@@ -14,13 +15,13 @@ abstract class KeyActionBehavior(val keyActionMap: Map<Key, (Iterable<Entity>) -
   @MutableInject
   lateinit var entityComponentManager: EntityComponentManager
 
-  protected fun tryAction(key: Key) {
-    if (!keyActionMap.containsKey(key)) {
+  protected fun tryAction(event: KeyEvent) {
+    if (!keyActionMap.containsKey(event.key)) {
       return
     }
 
     val entities = entityComponentManager[this]
-    val action = keyActionMap.getValue(key)
+    val action = keyActionMap.getValue(event.key)
 
     action(entities)
   }
@@ -29,20 +30,20 @@ abstract class KeyActionBehavior(val keyActionMap: Map<Key, (Iterable<Entity>) -
 class KeyPressActionBehavior(keyActionMap: Map<Key, (Iterable<Entity>) -> Unit>) : KeyActionBehavior(keyActionMap) {
   @EventListener
   fun action(event: KeyPressEvent) {
-    tryAction(event.key)
+    tryAction(event)
   }
 }
 
 class KeyReleaseActionBehavior(keyActionMap: Map<Key, (Iterable<Entity>) -> Unit>) : KeyActionBehavior(keyActionMap) {
   @EventListener
   fun action(event: KeyReleaseEvent) {
-    tryAction(event.key)
+    tryAction(event)
   }
 }
 
 class KeyHoldActionBehavior(keyActionMap: Map<Key, (Iterable<Entity>) -> Unit>) : KeyActionBehavior(keyActionMap) {
   @EventListener
   fun action(event: KeyHoldEvent) {
-    tryAction(event.key)
+    tryAction(event)
   }
 }

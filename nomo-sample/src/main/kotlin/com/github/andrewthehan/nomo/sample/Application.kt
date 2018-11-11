@@ -75,6 +75,7 @@ class Application : ApplicationAdapter() {
       add(RenderSystem())
       add(PhysicsStepSystem())
       add(KeyIoSystem())
+      add(MouseIoSystem())
       add(CollisionDetectionSystem())
     }
 
@@ -110,7 +111,7 @@ class Application : ApplicationAdapter() {
     val entity = entityComponentManager.getEntities(c).single()
     val position = entityComponentManager.getComponent<Position2dAttribute>(entity)
 
-    println(entityComponentManager.getAllEntities())
+    // println(entityComponentManager.getAllEntities())
     if (position.y < 0f) {
       Gdx.app.exit()
     }

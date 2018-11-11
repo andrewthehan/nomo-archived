@@ -11,6 +11,7 @@ import com.github.andrewthehan.nomo.sdk.ecs.systems.AbstractSystem
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputAdapter
+import com.badlogic.gdx.InputMultiplexer
 
 fun toKey(keyCode: Int): Key = when(keyCode) {
   Keys.A -> Key.A
@@ -58,7 +59,17 @@ class KeyIoSystem : AbstractSystem {
   val source = "0"
 
   constructor() : super(){
-    Gdx.input.setInputProcessor(object : InputAdapter() {
+    var multiplexer = Gdx.input.getInputProcessor()
+    if (multiplexer == null) {
+      multiplexer = InputMultiplexer()
+      Gdx.input.setInputProcessor(multiplexer)
+    } else if (multiplexer !is InputMultiplexer) {
+      val processor = multiplexer
+      multiplexer = InputMultiplexer()
+      multiplexer.addProcessor(processor)
+      Gdx.input.setInputProcessor(multiplexer)
+    }
+    multiplexer.addProcessor(object : InputAdapter() {
       override fun keyDown(keyCode: Int): Boolean {
         val key = toKey(keyCode)
         eventManager.dispatchEvent(KeyPressEvent(key, source))
