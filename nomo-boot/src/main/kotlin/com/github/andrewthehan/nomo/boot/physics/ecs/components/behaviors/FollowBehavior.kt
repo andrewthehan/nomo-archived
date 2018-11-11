@@ -1,7 +1,7 @@
 package com.github.andrewthehan.nomo.boot.physics.ecs.components.behaviors
 
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.*
-import com.github.andrewthehan.nomo.boot.util.ecs.events.UpdateEvent
+import com.github.andrewthehan.nomo.boot.time.ecs.events.UpdateEvent
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.EventListener
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.MutableInject
@@ -16,11 +16,16 @@ class FollowBehavior(var target: Entity, var speed: Float) : AbstractBehavior(),
 
   @EventListener
   fun follow(@Suppress("UNUSED_PARAMETER") event: UpdateEvent) {
-    val targetPosition = entityComponentManager.getComponent<Position2dAttribute>(target)
-
     val entity = entityComponentManager[this]
     val position = entityComponentManager.getComponent<Position2dAttribute>(entity)
     val velocity = entityComponentManager.getComponent<Velocity2dAttribute>(entity)
+
+    if (!entityComponentManager.containsEntity(target)) {
+      velocity.set(Vector2f(0f, 0f))
+      return 
+    }
+    
+    val targetPosition = entityComponentManager.getComponent<Position2dAttribute>(target)
 
     val distance = targetPosition - position
     val length = distance.length()

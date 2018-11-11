@@ -8,9 +8,11 @@ import com.github.andrewthehan.nomo.boot.physics.ecs.systems.*
 import com.github.andrewthehan.nomo.boot.io.ecs.components.behaviors.*
 import com.github.andrewthehan.nomo.boot.io.ecs.events.*
 import com.github.andrewthehan.nomo.boot.io.*
-import com.github.andrewthehan.nomo.boot.util.ecs.events.*
-import com.github.andrewthehan.nomo.boot.util.ecs.systems.*
+import com.github.andrewthehan.nomo.boot.time.ecs.events.*
+import com.github.andrewthehan.nomo.boot.time.ecs.systems.*
+import com.github.andrewthehan.nomo.boot.time.util.*
 import com.github.andrewthehan.nomo.core.ecs.types.*
+import com.github.andrewthehan.nomo.sample.ecs.components.attributes.*
 import com.github.andrewthehan.nomo.sample.ecs.components.behaviors.*
 import com.github.andrewthehan.nomo.sample.ecs.entities.*
 import com.github.andrewthehan.nomo.sample.ecs.systems.*
@@ -77,85 +79,22 @@ class Application : ApplicationAdapter() {
       add(KeyIoSystem())
       add(MouseIoSystem())
       add(CollisionDetectionSystem())
+      add(EnemySpawnSystem())
     }
 
     createFps(engine, 3f, 15f, "fps")
-
     createPlayer(engine, "player")
   }
 
-  fun createEnemy(engine: Engine, followTarget: EcsId): EcsId {
-    val entityComponentManager = engine.managers.get<EntityComponentManager>()!!
-
-    val triangleComponents = arrayOf(
-      Position2dAttribute(),
-      Velocity2dAttribute(),
-      Shape2fAttribute(RegularPolygon(Vector2f(), 20f, 3)),
-      ShapeRenderBehavior(Color(0f, .7f, .7f, 1f)),
-      CollidableAttribute(),
-      FollowBehavior(followTarget, 200f),
-      DeathOnCollisionBehavior(),
-      RemoveOnDeathBehavior()
-    )
-
-    val id = randomId()
-    entityComponentManager.add(id, triangleComponents)
-    return id
-  }
-
-  var i: Int = 0
-
   override fun render() {
-    val entityComponentManager = engine.managers.get<EntityComponentManager>()!!
-    val c = entityComponentManager.getComponents<KeyPressActionBehavior>().single()
-    val entity = entityComponentManager.getEntities(c).single()
-    val position = entityComponentManager.getComponent<Position2dAttribute>(entity)
-
-    // println(entityComponentManager.getAllEntities())
-    if (position.y < 0f) {
+    // no players remaining
+    val playerAttributes = engine.managers.get<EntityComponentManager>()!!.getComponents<PlayerAttribute>()
+    println(playerAttributes)
+    if (playerAttributes.none()) {
       Gdx.app.exit()
     }
-    ++i
-    if (i % 30 == 0) {
-      createEnemy(engine, "player")
-    }
+
     engine.update(Gdx.graphics.getDeltaTime())
-  }
-}
-
-class CollisionColorResetBehavior : AbstractBehavior() {
-  @MutableInject
-  lateinit var entityComponentManager: EntityComponentManager
-
-  @EventListener
-  @Befores(
-    Before(include = [ CollisionDebugBehavior::class ])
-  )
-  fun reset(@Suppress("UNUSED_PARAMETER") event: UpdateEvent) {
-    entityComponentManager[this].forEach {
-      val shapeRender = entityComponentManager.getComponent<ShapeRenderBehavior>(it)
-      shapeRender.color = Color(1f, 1f, 1f, 1f)
-    }
-  }
-}
-
-class CollisionDebugBehavior : AbstractBehavior() {
-  @MutableInject
-  lateinit var entityComponentManager: EntityComponentManager
-
-  @EventListener
-  @Befores(
-    Before(include = [ ShapeRenderBehavior::class ])
-  )
-  fun collide(event: CollisionEvent) {
-    entityComponentManager[this].forEach {
-      if (!event.includes(it)) {
-        return
-      }
-
-      val shapeRender = entityComponentManager.getComponent<ShapeRenderBehavior>(it)
-      shapeRender.color = Color(1f, 0f, 0f, 1f)
-    }
   }
 }
 

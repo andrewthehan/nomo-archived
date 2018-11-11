@@ -1,7 +1,7 @@
 package com.github.andrewthehan.nomo.sample.ecs.entities
 
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
-import com.github.andrewthehan.nomo.boot.util.ecs.components.behaviors.PeriodicBehavior
+import com.github.andrewthehan.nomo.boot.time.ecs.components.behaviors.PeriodicBehavior
 import com.github.andrewthehan.nomo.core.ecs.types.Engine
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
 import com.github.andrewthehan.nomo.sample.ecs.components.behaviors.TextRenderBehavior

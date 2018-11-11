@@ -1,4 +1,4 @@
-package com.github.andrewthehan.nomo.boot.util.ecs.events
+package com.github.andrewthehan.nomo.boot.time.ecs.events
 
 import com.github.andrewthehan.nomo.core.ecs.types.Event
 

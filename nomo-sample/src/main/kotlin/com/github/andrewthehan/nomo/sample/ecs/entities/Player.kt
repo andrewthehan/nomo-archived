@@ -1,6 +1,7 @@
 package com.github.andrewthehan.nomo.sample.ecs.entities
 
 import com.github.andrewthehan.nomo.boot.combat.ecs.components.behaviors.DeathOnCollisionBehavior
+import com.github.andrewthehan.nomo.boot.combat.ecs.components.behaviors.RemoveOnDeathBehavior
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Acceleration2dAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.CollidableAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
@@ -16,11 +17,12 @@ import com.github.andrewthehan.nomo.boot.io.ecs.events.MouseButtonReleaseEvent
 import com.github.andrewthehan.nomo.boot.io.ecs.events.MousePointerEvent
 import com.github.andrewthehan.nomo.boot.io.Key
 import com.github.andrewthehan.nomo.boot.io.MouseButton
-import com.github.andrewthehan.nomo.boot.util.ecs.components.behaviors.PeriodicBehavior
-import com.github.andrewthehan.nomo.boot.util.ecs.events.UpdateEvent
+import com.github.andrewthehan.nomo.boot.time.ecs.components.behaviors.PeriodicBehavior
+import com.github.andrewthehan.nomo.boot.time.ecs.events.UpdateEvent
 import com.github.andrewthehan.nomo.core.ecs.types.Component
 import com.github.andrewthehan.nomo.core.ecs.types.Engine
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
+import com.github.andrewthehan.nomo.sample.ecs.components.attributes.PlayerAttribute
 import com.github.andrewthehan.nomo.sample.ecs.components.behaviors.ShapeRenderBehavior
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.EventListener
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.MutableInject
@@ -60,6 +62,7 @@ fun createPlayer(engine: Engine, entity: Entity = randomId()): Entity {
   )
   
   val components = arrayOf(
+    PlayerAttribute(),
     Position2dAttribute(),
     Velocity2dAttribute(),
     Acceleration2dAttribute(),
@@ -67,6 +70,7 @@ fun createPlayer(engine: Engine, entity: Entity = randomId()): Entity {
     ShapeRenderBehavior(Color(1f, 1f, 1f, 1f)),
     CollidableAttribute(),
     DeathOnCollisionBehavior(),
+    // RemoveOnDeathBehavior(),
     KeyPressActionBehavior(keyPressActionMap),
     KeyReleaseActionBehavior(keyReleaseActionMap),
     ShootingBehavior(),
