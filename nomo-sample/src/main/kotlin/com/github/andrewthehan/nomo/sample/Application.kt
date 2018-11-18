@@ -1,9 +1,11 @@
 package com.github.andrewthehan.nomo.sample
 
+import com.github.andrewthehan.nomo.boot.collision.ecs.events.*
+import com.github.andrewthehan.nomo.boot.collision.ecs.systems.*
+import com.github.andrewthehan.nomo.boot.collision.detectors.*
 import com.github.andrewthehan.nomo.boot.combat.ecs.components.behaviors.*
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.*
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.behaviors.*
-import com.github.andrewthehan.nomo.boot.physics.ecs.events.*
 import com.github.andrewthehan.nomo.boot.physics.ecs.systems.*
 import com.github.andrewthehan.nomo.boot.io.ecs.components.behaviors.*
 import com.github.andrewthehan.nomo.boot.io.ecs.events.*
@@ -78,7 +80,10 @@ class Application : ApplicationAdapter() {
       add(PhysicsStepSystem())
       add(KeyIoSystem())
       add(MouseIoSystem())
-      add(CollisionDetectionSystem())
+      add(CollisionDetectionSystem().apply {
+        addCollisionDetector(LayerCollisionDetector())
+        addCollisionDetector(BoundingBoxCollisionDetector())
+      })
       add(EnemySpawnSystem())
     }
 
@@ -89,7 +94,6 @@ class Application : ApplicationAdapter() {
   override fun render() {
     // no players remaining
     val playerAttributes = engine.managers.get<EntityComponentManager>()!!.getComponents<PlayerAttribute>()
-    println(playerAttributes)
     if (playerAttributes.none()) {
       Gdx.app.exit()
     }
@@ -104,6 +108,7 @@ fun main(args: Array<String>) {
     title = "nomo"
     width = 1366
     height = 768
+    forceExit = false
   }
   LwjglApplication(Application(), config)
 }

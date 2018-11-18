@@ -2,6 +2,8 @@ package com.github.andrewthehan.nomo.sample.ecs.entities
 
 import com.github.andrewthehan.nomo.boot.combat.ecs.components.behaviors.DeathOnCollisionBehavior
 import com.github.andrewthehan.nomo.boot.combat.ecs.components.behaviors.RemoveOnDeathBehavior
+import com.github.andrewthehan.nomo.boot.layer.ecs.components.attributes.LayerAttribute
+import com.github.andrewthehan.nomo.boot.layer.Layer
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.CollidableAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Shape2fAttribute
@@ -25,7 +27,7 @@ fun createEnemy(engine: Engine): EcsId {
   val players = playerAttributes.flatMap { entityComponentManager[it] }.distinct()
   val positions = players.map { entityComponentManager.getComponent<Position2dAttribute>(it) }
 
-  val spawnPosition = Vector2f(300f, 300f)
+  val spawnPosition = Vector2f(1000f, 1000f)
   val closestPosition = positions.maxBy { (spawnPosition - it).length() }!!
   val closestPlayer = entityComponentManager[closestPosition].single()
 
@@ -37,7 +39,9 @@ fun createEnemy(engine: Engine): EcsId {
     CollidableAttribute(),
     FollowBehavior(closestPlayer, 200f),
     DeathOnCollisionBehavior(),
-    RemoveOnDeathBehavior()
+    RemoveOnDeathBehavior(),
+    LayerAttribute(Layer("enemy")),
+    LayerAttribute(Layer("player"))
   )
 
   val id = randomId()

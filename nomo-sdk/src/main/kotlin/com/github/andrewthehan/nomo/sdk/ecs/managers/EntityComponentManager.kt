@@ -56,6 +56,11 @@ class EntityComponentManager(override val engine: Engine) : Manager {
 
   fun containsComponent(component: Component) = entitiesToComponentsMap.containsValue(component)
 
+  fun isBound(entity: Entity, component: Component)
+    = containsEntity(entity)
+    && containsComponent(component)
+    && entitiesToComponentsMap[entity].contains(component)
+
   fun getAllEntities() = entitiesToComponentsMap.keys.toSet()
   
   fun <PendantComponent> getEntity(component: PendantComponent) where PendantComponent : Component, PendantComponent : Pendant

@@ -3,6 +3,8 @@ package com.github.andrewthehan.nomo.sample.ecs.entities
 import com.github.andrewthehan.nomo.boot.combat.ecs.components.behaviors.DeathOnCollisionBehavior
 import com.github.andrewthehan.nomo.boot.combat.ecs.components.behaviors.DelayedDeathBehavior
 import com.github.andrewthehan.nomo.boot.combat.ecs.components.behaviors.RemoveOnDeathBehavior
+import com.github.andrewthehan.nomo.boot.layer.ecs.components.attributes.LayerAttribute
+import com.github.andrewthehan.nomo.boot.layer.Layer
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.CollidableAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Shape2fAttribute
@@ -35,9 +37,10 @@ fun createBullet(engine: Engine, entity: Entity = randomId(), position: MutableV
     Shape2fAttribute(Circle(Vector2f(), 2f)),
     ShapeRenderBehavior(Color(1f, 1f, 1f, 1f)),
     CollidableAttribute(),
-    // DeathOnCollisionBehavior(),
+    DeathOnCollisionBehavior(),
     DelayedDeathBehavior(1f),
-    RemoveOnDeathBehavior()
+    RemoveOnDeathBehavior(),
+    LayerAttribute(Layer("enemy"))
   )
   entityComponentManager.add(entity, components)
   return entity
