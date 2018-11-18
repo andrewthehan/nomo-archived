@@ -1,10 +1,9 @@
 package com.github.andrewthehan.nomo.boot.collision.detectors
 
-import com.github.andrewthehan.nomo.core.ecs.types.Entity
-import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
-import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.CollidableAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Shape2fAttribute
+import com.github.andrewthehan.nomo.core.ecs.types.Entity
+import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
 import com.github.andrewthehan.nomo.util.math.shapes.*
 import com.github.andrewthehan.nomo.util.math.vectors.*
 

@@ -8,13 +8,13 @@ class HealthAttributeTest {
   @Test
   fun testHealthAttribute_holistic() {
     val healthAttribute = HealthAttribute(100f)
-    assertEquals(100f, healthAttribute.value)
+    assertEquals(100f, healthAttribute.health)
 
     healthAttribute.damage(25f)
-    assertEquals(75f, healthAttribute.value)
+    assertEquals(75f, healthAttribute.health)
 
     healthAttribute.heal(50f)
-    assertEquals(125f, healthAttribute.value)
+    assertEquals(125f, healthAttribute.health)
 
     assertTrue(healthAttribute.isAlive())
 
@@ -24,8 +24,8 @@ class HealthAttributeTest {
 
   @Test(expected = IllegalArgumentException::class)
   fun testHealthAttribute_negativeHeal() {
-    val healthAttribute = HealthAttribute(100)
-    healthAttribute.heal(-25)
+    val healthAttribute = HealthAttribute(100f)
+    healthAttribute.heal(-25f)
   }
 
   @Test(expected = IllegalArgumentException::class)

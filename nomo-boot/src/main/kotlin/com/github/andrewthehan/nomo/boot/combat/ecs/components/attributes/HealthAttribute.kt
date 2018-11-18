@@ -4,6 +4,12 @@ import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Mutab
 import com.github.andrewthehan.nomo.sdk.ecs.interfaces.Exclusive
 
 class HealthAttribute(initialHealth: Float) : MutableVector1fAttribute(initialHealth), Exclusive {
+  var health: Float
+    get() = x
+    set(value: Float) {
+      x = value
+    }
+
   fun isAlive(): Boolean = x > 0f
   fun isDead(): Boolean = x == 0f
 
@@ -12,7 +18,7 @@ class HealthAttribute(initialHealth: Float) : MutableVector1fAttribute(initialHe
       return
     }
 
-    require(amount >= 0f) { "Damage amount should be nonnegative: ${amount}" }
+    require(amount >= 0f) { "Damage amount should be nonnegative: $amount" }
 
     x -= amount
 
@@ -26,7 +32,7 @@ class HealthAttribute(initialHealth: Float) : MutableVector1fAttribute(initialHe
       return
     }
 
-    require(amount >= 0f) { "Heal amount should be nonnegative: ${amount}" }
+    require(amount >= 0f) { "Heal amount should be nonnegative: $amount" }
 
     x += amount
   }
