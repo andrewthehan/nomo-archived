@@ -1,6 +1,7 @@
 package com.github.andrewthehan.nomo.sample.ecs.components.behaviors
 
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
+import com.github.andrewthehan.nomo.sample.ecs.components.attributes.CameraAttribute
 import com.github.andrewthehan.nomo.sample.ecs.events.RenderEvent
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.Dependent
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.EventListener
@@ -18,7 +19,7 @@ class TextRenderBehavior(var text: String = "") : RenderBehavior() {
 
   @EventListener
   override fun render(event: RenderEvent) {
-    val batch = event.batch
+    val batch = entityComponentManager.getComponent<CameraAttribute>(event.camera).batch
     val entities = entityComponentManager[this]
     batch.begin()
     entities.forEach {

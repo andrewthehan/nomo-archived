@@ -2,6 +2,7 @@ package com.github.andrewthehan.nomo.sample.ecs.components.behaviors
 
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Shape2fAttribute
+import com.github.andrewthehan.nomo.sample.ecs.components.attributes.CameraAttribute
 import com.github.andrewthehan.nomo.sample.ecs.events.RenderEvent
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.Dependent
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.EventListener
@@ -19,10 +20,11 @@ class ShapeRenderBehavior(var color: Color = Color(1f, 1f, 1f, 1f)) : RenderBeha
   @MutableInject
   lateinit var entityComponentManager: EntityComponentManager
 
-  private val renderer = ShapeRenderer()
-
   @EventListener
   override fun render(event: RenderEvent) {
+    val camera = entityComponentManager.getComponent<CameraAttribute>(event.camera)
+    val renderer = camera.renderer
+
     val entities = entityComponentManager[this]
     renderer.begin(ShapeRenderer.ShapeType.Line)
     entities.forEach { entity ->

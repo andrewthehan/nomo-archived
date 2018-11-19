@@ -1,6 +1,7 @@
 package com.github.andrewthehan.nomo.boot.physics.ecs.components.behaviors
 
-import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.*
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Velocity2dAttribute
 import com.github.andrewthehan.nomo.boot.time.ecs.events.UpdateEvent
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.EventListener
@@ -10,7 +11,7 @@ import com.github.andrewthehan.nomo.sdk.ecs.interfaces.Pendant
 import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
 import com.github.andrewthehan.nomo.util.math.vectors.*
 
-class FollowBehavior(var target: Entity, var speed: Float) : AbstractBehavior(), Pendant {
+class LinearFollowBehavior(var target: Entity, var speed: Float) : AbstractBehavior(), Pendant {
   @MutableInject
   lateinit var entityComponentManager: EntityComponentManager
 

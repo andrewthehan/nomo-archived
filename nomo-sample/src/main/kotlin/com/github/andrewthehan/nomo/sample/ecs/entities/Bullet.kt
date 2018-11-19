@@ -9,14 +9,10 @@ import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Colli
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Shape2fAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Velocity2dAttribute
-import com.github.andrewthehan.nomo.boot.time.ecs.events.UpdateEvent
 import com.github.andrewthehan.nomo.core.ecs.types.Component
 import com.github.andrewthehan.nomo.core.ecs.types.Engine
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
 import com.github.andrewthehan.nomo.sample.ecs.components.behaviors.ShapeRenderBehavior
-import com.github.andrewthehan.nomo.sdk.ecs.annotations.EventListener
-import com.github.andrewthehan.nomo.sdk.ecs.annotations.MutableInject
-import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.AbstractBehavior
 import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
 import com.github.andrewthehan.nomo.util.math.shapes.*
 import com.github.andrewthehan.nomo.util.math.vectors.*

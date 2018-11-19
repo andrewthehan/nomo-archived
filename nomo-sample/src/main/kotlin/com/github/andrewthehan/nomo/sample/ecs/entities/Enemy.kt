@@ -8,7 +8,7 @@ import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Colli
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Shape2fAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Velocity2dAttribute
-import com.github.andrewthehan.nomo.boot.physics.ecs.components.behaviors.FollowBehavior
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.behaviors.LinearFollowBehavior
 import com.github.andrewthehan.nomo.core.ecs.types.EcsId
 import com.github.andrewthehan.nomo.core.ecs.types.Engine
 import com.github.andrewthehan.nomo.sample.ecs.components.attributes.PlayerAttribute
@@ -37,7 +37,7 @@ fun createEnemy(engine: Engine): EcsId {
     Shape2fAttribute(RegularPolygon(Vector2f(), 20f, 3)),
     ShapeRenderBehavior(Color(0f, .7f, .7f, 1f)),
     CollidableAttribute(),
-    FollowBehavior(closestPlayer, 200f),
+    LinearFollowBehavior(closestPlayer, 200f),
     DeathOnCollisionBehavior(),
     RemoveOnDeathBehavior(),
     LayerAttribute(Layer("enemy")),

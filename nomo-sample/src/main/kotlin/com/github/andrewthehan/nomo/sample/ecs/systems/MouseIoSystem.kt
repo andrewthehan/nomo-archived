@@ -30,7 +30,7 @@ class MouseIoSystem : AbstractSystem {
   lateinit var eventManager: EventManager
 
   val heldMouseButtons = HashSet<MouseButton>()
-  var lastPosition = Vector2i(0, 0)
+  var lastPosition = MutableVector2i()
   
   val source = "0"
 
@@ -48,25 +48,25 @@ class MouseIoSystem : AbstractSystem {
     multiplexer.addProcessor(object : InputAdapter() {
       override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean {
         val mouseButton = toMouseButton(button)
-        eventManager.dispatchEvent(MouseButtonPressEvent(mouseButton, Vector2i(x, Gdx.graphics.getHeight() - y), pointer.toString()))
+        eventManager.dispatchEvent(MouseButtonPressEvent(mouseButton, MutableVector2i(x, Gdx.graphics.getHeight() - y), pointer.toString()))
         heldMouseButtons.add(mouseButton)
         return true
       }
 
       override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean {
         val mouseButton = toMouseButton(button)
-        eventManager.dispatchEvent(MouseButtonReleaseEvent(mouseButton, Vector2i(x, Gdx.graphics.getHeight() - y), pointer.toString()))
+        eventManager.dispatchEvent(MouseButtonReleaseEvent(mouseButton, MutableVector2i(x, Gdx.graphics.getHeight() - y), pointer.toString()))
         heldMouseButtons.add(mouseButton)
         return true
       }
 
       override fun touchDragged(x: Int, y: Int, point: Int): Boolean {
-        lastPosition = Vector2i(x, Gdx.graphics.getHeight() - y)
+        lastPosition = MutableVector2i(x, Gdx.graphics.getHeight() - y)
         return true
       }
 
       override fun mouseMoved(x: Int, y: Int): Boolean {
-        lastPosition = Vector2i(x, Gdx.graphics.getHeight() - y)
+        lastPosition = MutableVector2i(x, Gdx.graphics.getHeight() - y)
         return true
       }
 
@@ -78,9 +78,9 @@ class MouseIoSystem : AbstractSystem {
   }
 
   override fun update(delta: Float) {
-    eventManager.dispatchEvent(MousePointerEvent(lastPosition, source))
+    eventManager.dispatchEvent(MousePointerEvent(lastPosition.toMutableVector2i(), source))
     heldMouseButtons.forEach {
-      eventManager.dispatchEvent(MouseButtonHoldEvent(it, lastPosition, source))
+      eventManager.dispatchEvent(MouseButtonHoldEvent(it, lastPosition.toMutableVector2i(), source))
     }
   }
 }

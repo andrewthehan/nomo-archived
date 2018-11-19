@@ -87,6 +87,7 @@ class Application : ApplicationAdapter() {
       add(EnemySpawnSystem())
     }
 
+    createCamera(engine, "player")
     createFps(engine, 3f, 15f, "fps")
     createPlayer(engine, "player")
   }

@@ -10,9 +10,9 @@ import com.github.andrewthehan.nomo.sdk.ecs.annotations.EventListener
 import com.github.andrewthehan.nomo.sdk.ecs.annotations.MutableInject
 import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.AbstractBehavior
 import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
-import com.github.andrewthehan.nomo.util.math.vectors.Vector2i
+import com.github.andrewthehan.nomo.util.math.vectors.MutableVector2i
 
-abstract class MouseButtonActionBehavior(val mouseButtonActionMap: Map<MouseButton, (Vector2i, Iterable<Entity>) -> Unit>) : AbstractBehavior() {
+abstract class MouseButtonActionBehavior(val mouseButtonActionMap: Map<MouseButton, (MutableVector2i, Iterable<Entity>) -> Unit>) : AbstractBehavior() {
   @MutableInject
   lateinit var entityComponentManager: EntityComponentManager
 
@@ -28,21 +28,21 @@ abstract class MouseButtonActionBehavior(val mouseButtonActionMap: Map<MouseButt
   }
 }
 
-class MouseButtonPressActionBehavior(mouseButtonActionMap: Map<MouseButton, (Vector2i, Iterable<Entity>) -> Unit>) : MouseButtonActionBehavior(mouseButtonActionMap) {
+class MouseButtonPressActionBehavior(mouseButtonActionMap: Map<MouseButton, (MutableVector2i, Iterable<Entity>) -> Unit>) : MouseButtonActionBehavior(mouseButtonActionMap) {
   @EventListener
   fun action(event: MouseButtonPressEvent) {
     tryAction(event)
   }
 }
 
-class MouseButtonReleaseActionBehavior(mouseButtonActionMap: Map<MouseButton, (Vector2i, Iterable<Entity>) -> Unit>) : MouseButtonActionBehavior(mouseButtonActionMap) {
+class MouseButtonReleaseActionBehavior(mouseButtonActionMap: Map<MouseButton, (MutableVector2i, Iterable<Entity>) -> Unit>) : MouseButtonActionBehavior(mouseButtonActionMap) {
   @EventListener
   fun action(event: MouseButtonReleaseEvent) {
     tryAction(event)
   }
 }
 
-class MouseButtonHoldActionBehavior(mouseButtonActionMap: Map<MouseButton, (Vector2i, Iterable<Entity>) -> Unit>) : MouseButtonActionBehavior(mouseButtonActionMap) {
+class MouseButtonHoldActionBehavior(mouseButtonActionMap: Map<MouseButton, (MutableVector2i, Iterable<Entity>) -> Unit>) : MouseButtonActionBehavior(mouseButtonActionMap) {
   @EventListener
   fun action(event: MouseButtonHoldEvent) {
     tryAction(event)

@@ -16,7 +16,7 @@ class CollisionDetectionSystem : AbstractSystem() {
   @MutableInject
   lateinit var eventManager: EventManager
 
-  private val collisionDetectors = HashSet<CollisionDetector>()
+  private val collisionDetectors = mutableListOf<CollisionDetector>()
 
   fun addCollisionDetector(collisionDetector: CollisionDetector) {
     collisionDetectors.add(collisionDetector)
