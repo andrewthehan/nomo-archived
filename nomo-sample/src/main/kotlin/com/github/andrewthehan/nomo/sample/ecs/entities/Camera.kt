@@ -2,7 +2,7 @@ package com.github.andrewthehan.nomo.sample.ecs.entities
 
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Velocity2dAttribute
-import com.github.andrewthehan.nomo.boot.physics.ecs.components.behaviors.LinearFollowBehavior
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.behaviors.InverseQuadraticFollowBehavior
 import com.github.andrewthehan.nomo.core.ecs.types.Component
 import com.github.andrewthehan.nomo.core.ecs.types.Engine
 import com.github.andrewthehan.nomo.core.ecs.types.Entity
@@ -18,7 +18,7 @@ import com.github.andrewthehan.nomo.util.randomId
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.Gdx
 
-private val cameraVelocity = 500f
+private val followIntensity = 2f
 
 fun createCamera(engine: Engine, target: Entity, entity: Entity = randomId()): Entity {
   val entityComponentManager = engine.managers.get<EntityComponentManager>()!!
@@ -29,7 +29,7 @@ fun createCamera(engine: Engine, target: Entity, entity: Entity = randomId()): E
     PrimaryCameraBehavior(),
     CameraAttribute(OrthographicCamera(Gdx.graphics.getWidth().toFloat(), Gdx.graphics.getHeight().toFloat())),
     CameraRefreshBehavior(),
-    LinearFollowBehavior(target, cameraVelocity)
+    InverseQuadraticFollowBehavior(target, followIntensity)
   )
   entityComponentManager.add(entity, components)
   return entity
