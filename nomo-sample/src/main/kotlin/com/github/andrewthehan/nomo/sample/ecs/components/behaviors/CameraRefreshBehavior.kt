@@ -23,7 +23,7 @@ class CameraRefreshBehavior() : AbstractBehavior(), Exclusive, Pendant {
   lateinit var entityComponentManager: EntityComponentManager
 
   @EventListener
-  fun updateCamera(event: UpdateEvent) {
+  fun updateCamera(@Suppress("UNUSED_PARAMETER") event: UpdateEvent) {
     val entity = entityComponentManager[this]
     val camera = entityComponentManager.getComponent<CameraAttribute>(entity)
     val position = entityComponentManager.getComponent<Position2dAttribute>(entity)

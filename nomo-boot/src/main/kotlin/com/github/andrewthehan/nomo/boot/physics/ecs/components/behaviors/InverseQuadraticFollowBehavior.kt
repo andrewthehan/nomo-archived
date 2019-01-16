@@ -10,8 +10,6 @@ class InverseQuadraticFollowBehavior(target: Entity, intensity: Float) : Abstrac
     val velocity = entityComponentManager.getComponent<Velocity2dAttribute>(entity)
 
     val distance = targetPosition - position
-    val direction = distance.normalized()
-
     velocity.set(intensity * distance)
   }
 }

@@ -30,7 +30,6 @@ class PrimaryCameraBehavior() : AbstractBehavior(), Exclusive, Pendant {
   @EventListener
   private fun updateMousePosition(position: MutableVector2i) {
     val entity = entityComponentManager[this]
-    val camera = entityComponentManager.getComponent<CameraAttribute>(entity)
     val cameraPosition = entityComponentManager.getComponent<Position2dAttribute>(entity)
 
     position += cameraPosition.toMutableVector2i() - MutableVector2i(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2)
