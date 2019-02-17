@@ -7,7 +7,7 @@ import com.github.andrewthehan.nomo.boot.layer.Layer
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Acceleration2dAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.CollidableAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
-import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Shape2fAttribute
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.ShapeAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Velocity2dAttribute
 import com.github.andrewthehan.nomo.boot.io.ecs.components.behaviors.KeyActionBehavior
 import com.github.andrewthehan.nomo.boot.io.ecs.components.behaviors.KeyPressActionBehavior
@@ -68,7 +68,7 @@ fun createPlayer(engine: Engine, entity: Entity = randomId()): Entity {
     Position2dAttribute(),
     Velocity2dAttribute(),
     Acceleration2dAttribute(),
-    Shape2fAttribute(Circle(Vector2f(), 15f)),
+    ShapeAttribute(Circle(zeroVector2f(), 15f)),
     ShapeRenderBehavior(Color(1f, 1f, 1f, 1f)),
     CollidableAttribute(),
     DeathOnCollisionBehavior(),
@@ -86,7 +86,7 @@ fun createPlayer(engine: Engine, entity: Entity = randomId()): Entity {
           .map { entityComponentManager.getComponent<Velocity2dAttribute>(it) }
           .filter { !it.isZero() }
           .forEach {
-            val delta = Vector2f(it.x, it.y) * deacceleration * event.delta
+            val delta = vectorOf(it.x, it.y) * deacceleration * event.delta
             it.x =
               if (abs(it.x) < abs(delta.x) && delta.x < 0.1f) { 0f }
               else { it.x + delta.x }
@@ -131,7 +131,7 @@ class ShootingBehavior : PeriodicBehavior(.1f), Pendant {
 
   @EventListener
   fun shoot(event: MousePointerEvent) {
-    target = Vector2f(event.position.x.toFloat(), event.position.y.toFloat())
+    target = vectorOf(event.position.x.toFloat(), event.position.y.toFloat())
   }
 
   override fun trigger() {

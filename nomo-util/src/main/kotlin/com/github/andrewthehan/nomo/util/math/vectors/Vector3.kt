@@ -1,24 +1,23 @@
 package com.github.andrewthehan.nomo.util.math.vectors
 
-import com.github.andrewthehan.nomo.util.math.*
+fun zeroVector3f() = Vector3fInternal(0f, 0f, 0f)
+fun zeroVector3i() = Vector3iInternal(0, 0, 0)
 
-fun Vector<*, *>.toVector3f(): Vector3f {
-  require(this.dimensions == 3) { "Vector dimensions should be 3: ${this.dimensions}" }
-  return Vector3f(this[0].toFloat(), this[1].toFloat(), this[2].toFloat())
-}
-open class Vector3f(x: Float = 0f, y: Float = 0f, z: Float = 0f) : Vector3<Float, Vector3f>(x, y, z) {
-  override fun vectorTypeOf(init: (Int) -> Float) = Vector3f(init(0), init(1), init(2))
-}
+fun vectorOf(x: Float, y: Float, z: Float) = Vector3fInternal(x, y, z)
+fun vectorOf(x: Int, y: Int, z: Int) = Vector3iInternal(x, y, z)
 
-fun Vector<*, *>.toVector3i(): Vector3i {
-  require(this.dimensions == 3) { "Vector dimensions should be 3: ${this.dimensions}" }
-  return Vector3i(this[0].toInt(), this[1].toInt(), this[2].toInt())
-}
-open class Vector3i(x: Int = 0, y: Int = 0, z: Int = 0) : Vector3<Int, Vector3i>(x, y, z) {
-  override fun vectorTypeOf(init: (Int) -> Int) = Vector3i(init(0), init(1), init(2))
+class Vector3fInternal(x: Float, y: Float, z: Float) : AbstractVector<Float, Vector3f>(x, y, z), Vector3f {
+  override fun create(elementProvider: (Int) -> Float) = Vector3fInternal(elementProvider(0), elementProvider(1), elementProvider(2))
 }
 
-abstract class Vector3<NumberType : Number, VectorType: Vector<NumberType, VectorType>>(x: NumberType = zero<NumberType>(), y: NumberType = zero<NumberType>(), z: NumberType = zero<NumberType>()) : AbstractVector<NumberType, VectorType>(x, y, z) {
+class Vector3iInternal(x: Int, y: Int, z: Int) : AbstractVector<Int, Vector3i>(x, y, z), Vector3i {
+  override fun create(elementProvider: (Int) -> Int) = Vector3iInternal(elementProvider(0), elementProvider(1), elementProvider(2))
+}
+
+interface Vector3f : Vector3<Float, Vector3f>
+interface Vector3i : Vector3<Int, Vector3i>
+
+interface Vector3<NumberType : Number, VectorType : Vector3<NumberType, VectorType>> : Vector<NumberType, VectorType> { 
   val x: NumberType
     get() = this[0]
   val y: NumberType

@@ -1,8 +1,8 @@
 package com.github.andrewthehan.nomo.util.math.shapes
 
-import com.github.andrewthehan.nomo.util.math.vectors.Vector
+import com.github.andrewthehan.nomo.util.math.vectors.Vector2f
 
-interface Shape<VectorType : Vector<*, *>> {
-  val points: List<VectorType>
-  val center: VectorType
+interface Shape {
+  val points: List<Vector2f>
+  val center: Vector2f
 }

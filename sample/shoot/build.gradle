@@ -19,6 +19,7 @@ ext {
 compileKotlin {
   kotlinOptions {
     jvmTarget = "1.8"
+    allWarningsAsErrors = true
   }
 }
 
@@ -31,9 +32,7 @@ task preBuild(type: Exec) {
   commandLine 'gradle', 'build', '--no-daemon'
 }
 
-build.dependsOn preBuild
-
-run.dependsOn preBuild
+compileKotlin.dependsOn preBuild
 
 repositories {
   mavenCentral()

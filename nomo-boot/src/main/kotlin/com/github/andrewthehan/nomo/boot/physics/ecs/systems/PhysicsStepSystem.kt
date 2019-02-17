@@ -12,7 +12,7 @@ class PhysicsStepSystem : AbstractSystem() {
   @MutableInject
   lateinit var entityComponentManager: EntityComponentManager
 
-  private inline fun <VectorType : MutableVector<Float, VectorType>, reified A, reified B> step(delta: Float) where
+  private inline fun <VectorType : Vector<Float, VectorType>, reified A, reified B> step(delta: Float) where
       A : MutableVector<Float, VectorType>,
       A : Attribute,
       A : Exclusive,
@@ -32,9 +32,9 @@ class PhysicsStepSystem : AbstractSystem() {
   }
 
   override fun update(delta: Float) {
-    step<MutableVector2f, Velocity2dAttribute, Position2dAttribute>(delta)
-    step<MutableVector2f, Acceleration2dAttribute, Velocity2dAttribute>(delta)
-    step<MutableVector3f, Velocity3dAttribute, Position3dAttribute>(delta)
-    step<MutableVector3f, Acceleration3dAttribute, Velocity3dAttribute>(delta)
+    step<Vector2f, Velocity2dAttribute, Position2dAttribute>(delta)
+    step<Vector2f, Acceleration2dAttribute, Velocity2dAttribute>(delta)
+    step<Vector3f, Velocity3dAttribute, Position3dAttribute>(delta)
+    step<Vector3f, Acceleration3dAttribute, Velocity3dAttribute>(delta)
   }
 }

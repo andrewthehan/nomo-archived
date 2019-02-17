@@ -1,24 +1,23 @@
 package com.github.andrewthehan.nomo.util.math.vectors
 
-import com.github.andrewthehan.nomo.util.math.*
+fun zeroVector2f() = Vector2fInternal(0f, 0f)
+fun zeroVector2i() = Vector2iInternal(0, 0)
 
-fun Vector<*, *>.toVector2f(): Vector2f {
-  require(this.dimensions == 2) { "Vector dimensions should be 2: ${this.dimensions}" }
-  return Vector2f(this[0].toFloat(), this[1].toFloat())
-}
-open class Vector2f(x: Float = 0f, y: Float = 0f) : Vector2<Float, Vector2f>(x, y) {
-  override fun vectorTypeOf(init: (Int) -> Float) = Vector2f(init(0), init(1))
-}
+fun vectorOf(x: Float, y: Float) = Vector2fInternal(x, y)
+fun vectorOf(x: Int, y: Int) = Vector2iInternal(x, y)
 
-fun Vector<*, *>.toVector2i(): Vector2i {
-  require(this.dimensions == 2) { "Vector dimensions should be 2: ${this.dimensions}" }
-  return Vector2i(this[0].toInt(), this[1].toInt())
-}
-open class Vector2i(x: Int = 0, y: Int = 0) : Vector2<Int, Vector2i>(x, y) {
-  override fun vectorTypeOf(init: (Int) -> Int) = Vector2i(init(0), init(1))
+class Vector2fInternal(x: Float, y: Float) : AbstractVector<Float, Vector2f>(x, y), Vector2f {
+  override fun create(elementProvider: (Int) -> Float) = Vector2fInternal(elementProvider(0), elementProvider(1))
 }
 
-abstract class Vector2<NumberType : Number, VectorType: Vector<NumberType, VectorType>>(x: NumberType = zero<NumberType>(), y: NumberType = zero<NumberType>()) : AbstractVector<NumberType, VectorType>(x, y) {
+class Vector2iInternal(x: Int, y: Int) : AbstractVector<Int, Vector2i>(x, y), Vector2i {
+  override fun create(elementProvider: (Int) -> Int) = Vector2iInternal(elementProvider(0), elementProvider(1))
+}
+
+interface Vector2f : Vector2<Float, Vector2f>
+interface Vector2i : Vector2<Int, Vector2i>
+
+interface Vector2<NumberType : Number, VectorType : Vector2<NumberType, VectorType>> : Vector<NumberType, VectorType> { 
   val x: NumberType
     get() = this[0]
   val y: NumberType

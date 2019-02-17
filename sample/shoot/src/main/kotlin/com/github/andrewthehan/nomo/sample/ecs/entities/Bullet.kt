@@ -7,7 +7,7 @@ import com.github.andrewthehan.nomo.boot.layer.ecs.components.attributes.LayerAt
 import com.github.andrewthehan.nomo.boot.layer.Layer
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.CollidableAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
-import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Shape2fAttribute
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.ShapeAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Velocity2dAttribute
 import com.github.andrewthehan.nomo.core.ecs.types.Component
 import com.github.andrewthehan.nomo.core.ecs.types.Engine
@@ -30,7 +30,7 @@ fun createBullet(engine: Engine, entity: Entity = randomId(), position: MutableV
   val components = arrayOf(
     Position2dAttribute(position.x, position.y),
     Velocity2dAttribute(velocity.x, velocity.y),
-    Shape2fAttribute(Circle(Vector2f(), 2f)),
+    ShapeAttribute(Circle(zeroVector2f(), 2f)),
     ShapeRenderBehavior(Color(1f, 1f, 1f, 1f)),
     CollidableAttribute(),
     DeathOnCollisionBehavior(),
