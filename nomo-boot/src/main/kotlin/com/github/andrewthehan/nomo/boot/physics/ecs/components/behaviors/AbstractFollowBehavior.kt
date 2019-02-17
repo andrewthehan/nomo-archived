@@ -21,7 +21,7 @@ abstract class AbstractFollowBehavior(var target: Entity, var intensity: Float) 
     val velocity = entityComponentManager.getComponent<Velocity2dAttribute>(entity)
 
     if (!entityComponentManager.containsEntity(target)) {
-      velocity.set(vectorOf(0f, 0f))
+      velocity.set(zeroVector2f())
       return
     }
 

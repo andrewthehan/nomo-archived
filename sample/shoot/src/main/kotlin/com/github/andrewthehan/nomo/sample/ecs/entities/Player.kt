@@ -86,7 +86,7 @@ fun createPlayer(engine: Engine, entity: Entity = randomId()): Entity {
           .map { entityComponentManager.getComponent<Velocity2dAttribute>(it) }
           .filter { !it.isZero() }
           .forEach {
-            val delta = vectorOf(it.x, it.y) * deacceleration * event.delta
+            val delta = it * deacceleration * event.delta
             it.x =
               if (abs(it.x) < abs(delta.x) && delta.x < 0.1f) { 0f }
               else { it.x + delta.x }
