@@ -1,0 +1,54 @@
+
+plugins {
+  id 'org.jetbrains.kotlin.jvm' version '1.3.20'
+}
+
+apply plugin: 'application'
+apply plugin: 'kotlin'
+
+group 'com.github.andrewthehan'
+version '0.0.1'
+
+mainClassName = 'com.github.andrewthehan.nomo.sample.ApplicationKt'
+
+ext {
+  gdxVersion = '1.9.8'
+  nomoVersion = '0.0.1'
+}
+
+compileKotlin {
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
+}
+
+test {
+  testLogging.showStandardStreams = true
+}
+
+task preBuild(type: Exec) {
+  workingDir "${projectDir}\\..\\.."
+  commandLine 'gradle', 'build', '--no-daemon'
+}
+
+build.dependsOn preBuild
+
+run.dependsOn preBuild
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile "org.jetbrains.kotlin:kotlin-stdlib"
+  compile "org.jetbrains.kotlin:kotlin-reflect"
+  testCompile "org.jetbrains.kotlin:kotlin-test-junit"
+
+  compile "com.badlogicgames.gdx:gdx-platform:${gdxVersion}:natives-desktop"
+  compile "com.badlogicgames.gdx:gdx-tools:${gdxVersion}"
+
+  compile files("../../nomo-boot/build/libs/nomo-boot-${nomoVersion}.jar")
+  compile files("../../nomo-core/build/libs/nomo-core-${nomoVersion}.jar")
+  compile files("../../nomo-sdk/build/libs/nomo-sdk-${nomoVersion}.jar")
+  compile files("../../nomo-util/build/libs/nomo-util-${nomoVersion}.jar")
+}
