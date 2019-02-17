@@ -29,3 +29,5 @@ allprojects {
     testCompile "org.jetbrains.kotlin:kotlin-test-junit"
   }
 }
+
+clean.dependsOn subprojects.collect { it.tasks.matching { it.name == 'clean' } }
