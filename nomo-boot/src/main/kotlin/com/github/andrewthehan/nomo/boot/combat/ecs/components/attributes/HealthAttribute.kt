@@ -3,7 +3,10 @@ package com.github.andrewthehan.nomo.boot.combat.ecs.components.attributes
 import com.github.andrewthehan.nomo.sdk.ecs.components.attributes.AbstractAttribute
 import com.github.andrewthehan.nomo.sdk.ecs.interfaces.Exclusive
 
-class HealthAttribute(initialHealth: Float) : AbstractAttribute(), Exclusive {
+import kotlin.math.min
+import kotlin.math.max
+
+class HealthAttribute(initialHealth: Float, var maxHealth: Float = Float.MAX_VALUE) : AbstractAttribute(), Exclusive {
   var health: Float = initialHealth
 
   fun isAlive(): Boolean = health > 0f
@@ -16,11 +19,7 @@ class HealthAttribute(initialHealth: Float) : AbstractAttribute(), Exclusive {
 
     require(amount >= 0f) { "Damage amount should be nonnegative: $amount" }
 
-    health -= amount
-
-    if (health < 0f) {
-      health = 0f
-    }
+    health = max(health - amount, 0f)
   }
 
   fun heal(amount: Float) {
@@ -30,6 +29,6 @@ class HealthAttribute(initialHealth: Float) : AbstractAttribute(), Exclusive {
 
     require(amount >= 0f) { "Heal amount should be nonnegative: $amount" }
 
-    health += amount
+    health = min(health + amount, maxHealth)
   }
 }
