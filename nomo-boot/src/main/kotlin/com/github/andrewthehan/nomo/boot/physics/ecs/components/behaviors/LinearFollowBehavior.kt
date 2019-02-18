@@ -5,10 +5,7 @@ import com.github.andrewthehan.nomo.core.ecs.types.Entity
 import com.github.andrewthehan.nomo.util.math.vectors.*
 
 class LinearFollowBehavior(target: Entity, intensity: Float) : AbstractFollowBehavior(target, intensity) {
-  override fun setVelocity(position: Vector2f, targetPosition: Vector2f) {
-    val entity = entityComponentManager[this]
-    val velocity = entityComponentManager.getComponent<Velocity2dAttribute>(entity)
-
+  override fun setVelocity(velocity: MutableVector2f, position: Vector2f, targetPosition: Vector2f) {
     val distance = targetPosition - position
     val direction = distance.normalized()
 
