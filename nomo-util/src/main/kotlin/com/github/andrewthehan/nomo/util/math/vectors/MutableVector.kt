@@ -2,7 +2,7 @@ package com.github.andrewthehan.nomo.util.math.vectors
 
 import com.github.andrewthehan.nomo.util.math.*
 
-abstract class AbstractMutableVector<NumberType : Number, VectorType : Vector<NumberType, VectorType>>: AbstractVector<NumberType, VectorType>, MutableVector<NumberType, VectorType> {
+abstract class AbstractMutableVector<NumberType : Number>: AbstractVector<NumberType>, MutableVector<NumberType> {
   override val dimensions: Int
   override val components: MutableList<NumberType>
 
@@ -12,25 +12,24 @@ abstract class AbstractMutableVector<NumberType : Number, VectorType : Vector<Nu
   }
 }
 
-interface MutableVector<NumberType : Number, VectorType : Vector<NumberType, VectorType>> : Vector<NumberType, VectorType> {
-
+interface MutableVector<NumberType : Number> : Vector<NumberType> {
   override val components: MutableList<NumberType>
+}
   
-  operator fun plusAssign(vector: VectorType): Unit = (0 until dimensions).forEach { this[it] = this[it] + vector[it] }
-  operator fun minusAssign(vector: VectorType): Unit = (0 until dimensions).forEach { this[it] = this[it] - vector[it] }
-  operator fun timesAssign(scalar: NumberType): Unit = mutableMap { it * scalar }
-  operator fun divAssign(scalar: NumberType): Unit = mutableMap { it / scalar }
+operator fun <NumberType : Number, MutableVectorType : MutableVector<NumberType>> MutableVectorType.plusAssign(vector: Vector<NumberType>) = (0 until dimensions).forEach { this[it] = this[it] + vector[it] }
+operator fun <NumberType : Number, MutableVectorType : MutableVector<NumberType>> MutableVectorType.minusAssign(vector: Vector<NumberType>) = (0 until dimensions).forEach { this[it] = this[it] - vector[it] }
+operator fun <NumberType : Number, MutableVectorType : MutableVector<NumberType>> MutableVectorType.timesAssign(scalar: NumberType) = mutableMap { it * scalar }
+operator fun <NumberType : Number, MutableVectorType : MutableVector<NumberType>> MutableVectorType.divAssign(scalar: NumberType) = mutableMap { it / scalar }
 
-  fun set(vector: VectorType): Unit = (0 until dimensions).forEach { this[it] = vector[it] }
-  operator fun set(i: Int, value: NumberType): Unit {
-    components[i] = value
-  }
+fun <NumberType : Number, MutableVectorType : MutableVector<NumberType>> MutableVectorType.set(vector: Vector<NumberType>) = (0 until dimensions).forEach { this[it] = vector[it] }
+operator fun <NumberType : Number, MutableVectorType : MutableVector<NumberType>> MutableVectorType.set(i: Int, value: NumberType) {
+  components[i] = value
+}
 
-  fun zero(): Unit = mutableMap { zero<NumberType>() }
+fun <NumberType : Number, MutableVectorType : MutableVector<NumberType>> MutableVectorType.zero(): Unit = mutableMap { zero<NumberType>() }
 
-  fun mutableMap(transform: (NumberType) -> NumberType): Unit {
-    (0 until dimensions).forEach {
-      this[it] = transform(this[it])
-    }
+fun <NumberType : Number, MutableVectorType : MutableVector<NumberType>> MutableVectorType.mutableMap(transform: (NumberType) -> NumberType) {
+  (0 until dimensions).forEach {
+    this[it] = transform(this[it])
   }
 }

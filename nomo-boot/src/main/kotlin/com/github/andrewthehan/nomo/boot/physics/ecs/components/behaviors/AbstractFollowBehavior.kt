@@ -21,14 +21,14 @@ abstract class AbstractFollowBehavior(var target: Entity, var intensity: Float) 
       val velocity = entityComponentManager.getComponent<Velocity2dAttribute>(it)
 
       if (!entityComponentManager.containsEntity(target)) {
-        velocity.set(zeroVector2f())
+        velocity.zero()
         return
       }
 
       val position = entityComponentManager.getComponent<Position2dAttribute>(it)
       val targetPosition = entityComponentManager.getComponent<Position2dAttribute>(target)
 
-      val distance = targetPosition - position
+      val distance = (targetPosition as MutableVector2f) - position
       val length = distance.length()
       if (length == 0f) {
         return

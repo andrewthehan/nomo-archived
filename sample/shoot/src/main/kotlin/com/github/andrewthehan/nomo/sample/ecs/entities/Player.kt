@@ -76,26 +76,26 @@ fun createPlayer(engine: Engine, entity: Entity = randomId()): Entity {
     LayerAttribute(Layer("player")),
     KeyPressActionBehavior(keyPressActionMap),
     KeyReleaseActionBehavior(keyReleaseActionMap),
-    ShootingBehavior(),
-    // smoothly deaccelerate
-    object : AbstractBehavior() {
-      @EventListener
-      fun slowDown(event: UpdateEvent) {
-        val entities = entityComponentManager[this]
-        entities
-          .map { entityComponentManager.getComponent<Velocity2dAttribute>(it) }
-          .filter { !it.isZero() }
-          .forEach {
-            val delta = it * deacceleration * event.delta
-            it.x =
-              if (abs(it.x) < abs(delta.x) && delta.x < 0.1f) { 0f }
-              else { it.x + delta.x }
-            it.y =
-              if (abs(it.y) < abs(delta.y) && delta.y < 0.1f) { 0f }
-              else { it.y + delta.y }
-          }
-      }
-    }
+    ShootingBehavior()
+    // // smoothly deaccelerate
+    // object : AbstractBehavior() {
+    //   @EventListener
+    //   fun slowDown(event: UpdateEvent) {
+    //     val entities = entityComponentManager[this]
+    //     entities
+    //       .map { entityComponentManager.getComponent<Velocity2dAttribute>(it) }
+    //       .filter { !it.isZero() }
+    //       .forEach {
+    //         val delta = it * deacceleration * event.delta
+    //         it.x =
+    //           if (abs(it.x) < abs(delta.x) && delta.x < 0.1f) { 0f }
+    //           else { it.x + delta.x }
+    //         it.y =
+    //           if (abs(it.y) < abs(delta.y) && delta.y < 0.1f) { 0f }
+    //           else { it.y + delta.y }
+    //       }
+    //   }
+    // }
   )
   entityComponentManager.add(entity, components)
   return entity
