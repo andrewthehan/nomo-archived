@@ -29,26 +29,17 @@ interface Vector1<NumberType : Number> : Vector<NumberType> {
   operator fun component1() = this[0]
 }
 
-interface Vector2<NumberType : Number> : Vector<NumberType> { 
-  val x: NumberType
-    get() = this[0]
+interface Vector2<NumberType : Number> : Vector1<NumberType> { 
   val y: NumberType
     get() = this[1]
 
-  operator fun component1() = this[0]
   operator fun component2() = this[1]
 }
 
-interface Vector3<NumberType : Number> : Vector<NumberType> { 
-  val x: NumberType
-    get() = this[0]
-  val y: NumberType
-    get() = this[1]
+interface Vector3<NumberType : Number> : Vector2<NumberType> { 
   val z: NumberType
     get() = this[2]
 
-  operator fun component1() = this[0]
-  operator fun component2() = this[1]
   operator fun component3() = this[2]
 }
 

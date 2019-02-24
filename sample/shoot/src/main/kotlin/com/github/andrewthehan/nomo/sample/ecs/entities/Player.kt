@@ -6,12 +6,14 @@ import com.github.andrewthehan.nomo.boot.layer.ecs.components.attributes.LayerAt
 import com.github.andrewthehan.nomo.boot.layer.Layer
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Acceleration2dAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.CollidableAttribute
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.DynamicBodyAttribute
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.MassAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Position2dAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.ShapeAttribute
 import com.github.andrewthehan.nomo.boot.physics.ecs.components.attributes.Velocity2dAttribute
-import com.github.andrewthehan.nomo.boot.io.ecs.components.behaviors.KeyActionBehavior
-import com.github.andrewthehan.nomo.boot.io.ecs.components.behaviors.KeyPressActionBehavior
-import com.github.andrewthehan.nomo.boot.io.ecs.components.behaviors.KeyReleaseActionBehavior
+import com.github.andrewthehan.nomo.boot.physics.ecs.components.behaviors.Kinetic2dBehavior
+import com.github.andrewthehan.nomo.boot.physics.ecs.events.Force2dEvent
+import com.github.andrewthehan.nomo.boot.io.ecs.components.behaviors.KeyHoldActionBehavior
 import com.github.andrewthehan.nomo.boot.io.ecs.events.KeyPressEvent
 import com.github.andrewthehan.nomo.boot.io.ecs.events.KeyReleaseEvent
 import com.github.andrewthehan.nomo.boot.io.ecs.events.MouseButtonPressEvent
@@ -31,6 +33,7 @@ import com.github.andrewthehan.nomo.sdk.ecs.annotations.MutableInject
 import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.AbstractBehavior
 import com.github.andrewthehan.nomo.sdk.ecs.interfaces.Pendant
 import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
+import com.github.andrewthehan.nomo.sdk.ecs.managers.EventManager
 import com.github.andrewthehan.nomo.util.math.shapes.*
 import com.github.andrewthehan.nomo.util.math.vectors.*
 import com.github.andrewthehan.nomo.util.randomId
@@ -40,27 +43,18 @@ import com.badlogic.gdx.graphics.Color
 import kotlin.math.abs
 import kotlin.math.sign
 
-private val playerVelocity = 3000f
-private val deacceleration = -5f
+private val PLAYER_MOVE_FORCE = 300f
+private val PLAYER_MASS = 1f
 
 fun createPlayer(engine: Engine, entity: Entity = randomId()): Entity {
   val entityComponentManager = engine.managers.get<EntityComponentManager>()!!
+  val eventManager = engine.managers.get<EventManager>()!!
 
-  val toAccelerations = { entities: Iterable<Entity> ->
-    entities.map { entityComponentManager.getComponent<Acceleration2dAttribute>(it) }
-  }
-
-  val keyPressActionMap = mapOf(
-    Key.W to { entities: Iterable<Entity> -> toAccelerations(entities).forEach { it.y += playerVelocity } },
-    Key.A to { entities: Iterable<Entity> -> toAccelerations(entities).forEach { it.x -= playerVelocity } },
-    Key.S to { entities: Iterable<Entity> -> toAccelerations(entities).forEach { it.y -= playerVelocity } },
-    Key.D to { entities: Iterable<Entity> -> toAccelerations(entities).forEach { it.x += playerVelocity } }
-  )
-  val keyReleaseActionMap = mapOf(
-    Key.W to { entities: Iterable<Entity> -> toAccelerations(entities).forEach { it.y -= playerVelocity } },
-    Key.A to { entities: Iterable<Entity> -> toAccelerations(entities).forEach { it.x += playerVelocity } },
-    Key.S to { entities: Iterable<Entity> -> toAccelerations(entities).forEach { it.y += playerVelocity } },
-    Key.D to { entities: Iterable<Entity> -> toAccelerations(entities).forEach { it.x -= playerVelocity } }
+  val keyActionMap = mapOf(
+    Key.W to { entities: Iterable<Entity> -> eventManager.dispatchEvent(Force2dEvent(vectorOf(0f, PLAYER_MOVE_FORCE)), entities) },
+    Key.A to { entities: Iterable<Entity> -> eventManager.dispatchEvent(Force2dEvent(vectorOf(-PLAYER_MOVE_FORCE, 0f)), entities) },
+    Key.S to { entities: Iterable<Entity> -> eventManager.dispatchEvent(Force2dEvent(vectorOf(0f, -PLAYER_MOVE_FORCE)), entities) },
+    Key.D to { entities: Iterable<Entity> -> eventManager.dispatchEvent(Force2dEvent(vectorOf(PLAYER_MOVE_FORCE, 0f)), entities) }
   )
   
   val components = arrayOf(
@@ -74,28 +68,11 @@ fun createPlayer(engine: Engine, entity: Entity = randomId()): Entity {
     DeathOnCollisionBehavior(),
     RemoveOnDeathBehavior(),
     LayerAttribute(Layer("player")),
-    KeyPressActionBehavior(keyPressActionMap),
-    KeyReleaseActionBehavior(keyReleaseActionMap),
-    ShootingBehavior()
-    // // smoothly deaccelerate
-    // object : AbstractBehavior() {
-    //   @EventListener
-    //   fun slowDown(event: UpdateEvent) {
-    //     val entities = entityComponentManager[this]
-    //     entities
-    //       .map { entityComponentManager.getComponent<Velocity2dAttribute>(it) }
-    //       .filter { !it.isZero() }
-    //       .forEach {
-    //         val delta = it * deacceleration * event.delta
-    //         it.x =
-    //           if (abs(it.x) < abs(delta.x) && delta.x < 0.1f) { 0f }
-    //           else { it.x + delta.x }
-    //         it.y =
-    //           if (abs(it.y) < abs(delta.y) && delta.y < 0.1f) { 0f }
-    //           else { it.y + delta.y }
-    //       }
-    //   }
-    // }
+    KeyHoldActionBehavior(keyActionMap),
+    ShootingBehavior(),
+    DynamicBodyAttribute(),
+    MassAttribute(PLAYER_MASS),
+    Kinetic2dBehavior()
   )
   entityComponentManager.add(entity, components)
   return entity

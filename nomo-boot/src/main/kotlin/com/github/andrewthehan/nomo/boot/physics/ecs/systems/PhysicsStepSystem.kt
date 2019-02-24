@@ -12,18 +12,14 @@ import com.github.andrewthehan.nomo.sdk.ecs.managers.EntityComponentManager
 import com.github.andrewthehan.nomo.sdk.ecs.systems.AbstractSystem
 import com.github.andrewthehan.nomo.util.math.vectors.*
 
-class PhysicsStepSystem : AbstractSystem() {
+abstract class PhysicsStepSystem : AbstractSystem() {
   @MutableInject
   lateinit var entityComponentManager: EntityComponentManager
 
-  private inline fun <VectorType : MutableVector<Float>, reified A, reified B> computeAcceleration() where
-      A : MutableVector<Float>,
-      A : Attribute,
-      A : Exclusive,
+  protected inline fun <reified A, reified B> computeAcceleration() where
       A : AccelerationAttribute,
-      B : Behavior,
-      B : Exclusive,
-      B : KineticBehavior<VectorType> {
+      A : MutableVector<Float>,
+      B : KineticBehavior<MutableVector<Float>> {
     entityComponentManager
       .getComponents<DynamicBodyAttribute>()
       .flatMap { entityComponentManager[it] }
@@ -31,13 +27,13 @@ class PhysicsStepSystem : AbstractSystem() {
         val acceleration = entityComponentManager.getComponent<A>(it)
         val kinetic = entityComponentManager.getComponent<B>(it)
         val mass = entityComponentManager.getComponent<MassAttribute>(it)
-        acceleration += kinetic.netForce / mass
 
+        acceleration.set(kinetic.netForce / mass)
         kinetic.reset()
       };
   }
 
-  private inline fun <VectorType : Vector<Float>, reified A, reified B> step(delta: Float) where
+  protected inline fun <VectorType : Vector<Float>, reified A, reified B> step(delta: Float) where
       A : MutableVector<Float>,
       A : Attribute,
       A : Exclusive,
@@ -55,13 +51,19 @@ class PhysicsStepSystem : AbstractSystem() {
         }
       }
   }
+}
 
+class Physics2dStepSystem : PhysicsStepSystem() {
   override fun update(delta: Float) {
-    computeAcceleration<MutableVector2f, Acceleration2dAttribute, Kinetic2dBehavior>()
+    computeAcceleration<Acceleration2dAttribute, Kinetic2dBehavior>()
     step<Vector2f, Velocity2dAttribute, Position2dAttribute>(delta)
     step<Vector2f, Acceleration2dAttribute, Velocity2dAttribute>(delta)
+  }
+}
 
-    computeAcceleration<MutableVector3f, Acceleration3dAttribute, Kinetic3dBehavior>()
+class Physics3dStepSystem : PhysicsStepSystem() {
+  override fun update(delta: Float) {
+    computeAcceleration<Acceleration3dAttribute, Kinetic3dBehavior>()
     step<Vector3f, Velocity3dAttribute, Position3dAttribute>(delta)
     step<Vector3f, Acceleration3dAttribute, Velocity3dAttribute>(delta)
   }

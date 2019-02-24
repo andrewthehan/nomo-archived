@@ -18,6 +18,8 @@ import com.github.andrewthehan.nomo.sample.ecs.components.attributes.*
 import com.github.andrewthehan.nomo.sample.ecs.components.behaviors.*
 import com.github.andrewthehan.nomo.sample.ecs.entities.*
 import com.github.andrewthehan.nomo.sample.ecs.systems.*
+import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.*
+import com.github.andrewthehan.nomo.sdk.ecs.annotations.*
 import com.github.andrewthehan.nomo.sdk.ecs.interfaces.*
 import com.github.andrewthehan.nomo.sdk.ecs.managers.*
 import com.github.andrewthehan.nomo.sdk.ecs.tasks.*
@@ -35,9 +37,6 @@ import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
 
 import com.badlogic.gdx.graphics.Texture;
-import com.github.andrewthehan.nomo.sample.ecs.components.behaviors.*
-import com.github.andrewthehan.nomo.sdk.ecs.components.behaviors.*
-import com.github.andrewthehan.nomo.sdk.ecs.annotations.*
 
 import kotlin.math.*
 
@@ -77,7 +76,7 @@ class Application : ApplicationAdapter() {
     systemsManager.systems.apply {
       add(UpdateSystem())
       add(RenderSystem())
-      add(PhysicsStepSystem())
+      add(Physics2dStepSystem())
       add(KeyIoSystem())
       add(MouseIoSystem())
       add(CollisionDetectionSystem().apply {

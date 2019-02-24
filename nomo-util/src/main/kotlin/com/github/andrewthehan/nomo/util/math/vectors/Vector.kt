@@ -6,18 +6,6 @@ import kotlin.math.sqrt
 import kotlin.reflect.full.cast
 import kotlin.reflect.KClass
 
-abstract class AbstractVector<NumberType : Number>: Vector<NumberType>{
-  override val dimensions: Int
-  override val components: List<NumberType>
-
-  constructor(vararg elements: NumberType) {
-    this.dimensions = elements.size
-    this.components = List(this.dimensions) { elements[it] }
-  }
-
-  override fun toString() = "<" + components.joinToString() + ">"
-}
-
 interface Vector<NumberType : Number> {
   val dimensions: Int
   val components: List<NumberType>
@@ -25,11 +13,11 @@ interface Vector<NumberType : Number> {
 }
 
 @Suppress("UNCHECKED_CAST")
-private fun <NumberType : Number, VectorType : Vector<NumberType>> VectorType.create(elementProvider: (Int) -> NumberType): VectorType {
+fun <NumberType : Number, VectorType : Vector<NumberType>> VectorType.create(elementProvider: (Int) -> NumberType): VectorType {
   return vectorProducer(elementProvider) as VectorType
 }
-private fun <NumberType : Number, VectorType : Vector<NumberType>> VectorType.create(vararg elements: NumberType): VectorType = create { elements[it] }
-private fun <NumberType : Number, VectorType : Vector<NumberType>> VectorType.create(elements: List<NumberType>): VectorType = create { elements[it] }
+fun <NumberType : Number, VectorType : Vector<NumberType>> VectorType.create(vararg elements: NumberType): VectorType = create { elements[it] }
+fun <NumberType : Number, VectorType : Vector<NumberType>> VectorType.create(elements: List<NumberType>): VectorType = create { elements[it] }
 
 operator fun <NumberType : Number, VectorType : Vector<NumberType>> VectorType.unaryPlus(): VectorType = create { this[it] }
 operator fun <NumberType : Number, VectorType : Vector<NumberType>> VectorType.unaryMinus(): VectorType = create { -this[it] }
