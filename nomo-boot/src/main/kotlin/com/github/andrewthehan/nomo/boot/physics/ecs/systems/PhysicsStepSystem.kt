@@ -33,7 +33,7 @@ abstract class PhysicsStepSystem : AbstractSystem() {
       };
   }
 
-  protected inline fun <VectorType : Vector<Float>, reified A, reified B> step(delta: Float) where
+  protected inline fun <reified A, reified B> step(delta: Float) where
       A : MutableVector<Float>,
       A : Attribute,
       A : Exclusive,
@@ -56,15 +56,15 @@ abstract class PhysicsStepSystem : AbstractSystem() {
 class Physics2dStepSystem : PhysicsStepSystem() {
   override fun update(delta: Float) {
     computeAcceleration<Acceleration2dAttribute, Kinetic2dBehavior>()
-    step<Vector2f, Velocity2dAttribute, Position2dAttribute>(delta)
-    step<Vector2f, Acceleration2dAttribute, Velocity2dAttribute>(delta)
+    step<Velocity2dAttribute, Position2dAttribute>(delta)
+    step<Acceleration2dAttribute, Velocity2dAttribute>(delta)
   }
 }
 
 class Physics3dStepSystem : PhysicsStepSystem() {
   override fun update(delta: Float) {
     computeAcceleration<Acceleration3dAttribute, Kinetic3dBehavior>()
-    step<Vector3f, Velocity3dAttribute, Position3dAttribute>(delta)
-    step<Vector3f, Acceleration3dAttribute, Velocity3dAttribute>(delta)
+    step<Velocity3dAttribute, Position3dAttribute>(delta)
+    step<Acceleration3dAttribute, Velocity3dAttribute>(delta)
   }
 }

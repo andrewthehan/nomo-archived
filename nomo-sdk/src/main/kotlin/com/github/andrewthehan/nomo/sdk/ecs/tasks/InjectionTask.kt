@@ -24,6 +24,7 @@ class InjectionTask(override val engine: Engine) : Task {
       .getInjectableProperties()
       .filter { it.returnType.jvmErasure.isSubclassOf(Manager::class) }
       .forEach {
+        // cast success is guaranteed due to filter above
         @Suppress("UNCHECKED_CAST")
         val manager = engine.managers.get(it.returnType.jvmErasure as KClass<out Manager>)!!
         it.setter.call(ecsObject, manager)
